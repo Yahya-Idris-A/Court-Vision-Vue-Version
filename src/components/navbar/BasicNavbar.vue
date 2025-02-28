@@ -62,6 +62,11 @@
           </button>
         </div>
       </div>
+      <v-icon
+        icon="mdi mdi-menu"
+        size="x-large"
+        class="cursor-pointer"
+      ></v-icon>
     </nav>
   </header>
 </template>
