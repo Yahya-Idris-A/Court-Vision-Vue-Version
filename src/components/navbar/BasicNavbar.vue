@@ -13,35 +13,50 @@
       </div>
       <!-- Content -->
       <div
-        class="flex justify-end items-center gap-[24px] max-sm:flex-col max-sm:absolute max-sm:bg-white max-sm:stroke-[#667085] max-sm:shadow max-sm:left-0 max-sm:top-[10%] max-sm:w-full max-sm:pb-[20px]"
+        class="flex justify-end items-center gap-[24px] max-sm:flex-col max-sm:absolute max-sm:bg-white max-sm:stroke-[#667085] max-sm:shadow max-sm:left-0 max-sm:w-full max-sm:pb-[20px]"
+        :class="isMenuOpen ? 'max-sm:top-[10%]' : 'max-sm:-top-full'"
       >
         <!-- Navigation -->
         <div class="">
           <ul class="flex max-sm:flex-col items-center gap-[24px]">
             <li>
               <a
-                class="text-[#667085] hover:text-[#FD6A2A] text-[16px] font-semibold"
+                class="hover:text-[#FD6A2A] text-[16px] font-semibold"
+                :class="
+                  $route.name == 'Home' ? 'text-[#FD6A2A]' : 'text-[#667085]'
+                "
                 href=""
                 >Home</a
               >
             </li>
             <li>
               <a
-                class="text-[#667085] hover:text-[#FD6A2A] text-[16px] font-semibold"
+                class="hover:text-[#FD6A2A] text-[16px] font-semibold"
+                :class="
+                  $route.name == 'Features'
+                    ? 'text-[#FD6A2A]'
+                    : 'text-[#667085]'
+                "
                 href=""
                 >Fetaures</a
               >
             </li>
             <li>
               <a
-                class="text-[#667085] hover:text-[#FD6A2A] text-[16px] font-semibold"
+                class="hover:text-[#FD6A2A] text-[16px] font-semibold"
+                :class="
+                  $route.name == 'Pricing' ? 'text-[#FD6A2A]' : 'text-[#667085]'
+                "
                 href=""
                 >Pricing</a
               >
             </li>
             <li>
               <a
-                class="text-[#667085] hover:text-[#FD6A2A] text-[16px] font-semibold"
+                class="hover:text-[#FD6A2A] text-[16px] font-semibold"
+                :class="
+                  $route.name == 'Contact' ? 'text-[#FD6A2A]' : 'text-[#667085]'
+                "
                 href=""
                 >Contact</a
               >
@@ -51,7 +66,7 @@
         <!-- login button -->
         <div class="">
           <button
-            class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[16px] font-semibold items-center"
+            class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[16px] font-semibold items-center cursor-pointer"
           >
             Log In
             <img
@@ -63,12 +78,20 @@
         </div>
       </div>
       <v-icon
-        icon="mdi mdi-menu"
-        size="x-large"
-        class="cursor-pointer"
+        :icon="isMenuOpen ? 'mdi mdi-close' : 'mdi mdi-menu'"
+        class="!text-[40px] cursor-pointer md:!hidden"
+        @click="onToggleMenu"
       ></v-icon>
     </nav>
   </header>
 </template>
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const isMenuOpen = ref(false);
+
+const onToggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+</script>
 <style scoped></style>
