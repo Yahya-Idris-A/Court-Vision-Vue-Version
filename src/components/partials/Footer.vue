@@ -1,8 +1,8 @@
 <template>
   <div class="bg-[#403D91]">
-    <div class="flex flex-col gap-[24px] mx-[70px] py-[24px]">
-      <div class="flex flex-row justify-between">
-        <div class="flex flex-col w-1/3 gap-[24px]">
+    <div class="flex flex-col gap-[12px] md:gap-[24px] mx-[70px] py-[24px]">
+      <div class="flex flex-col md:flex-row md:justify-between">
+        <div class="flex flex-col w-full md:w-1/3 gap-[12px] md:gap-[24px]">
           <img
             src="@assets/img/company Logo/Logo.png"
             alt=""
@@ -15,7 +15,7 @@
             aliquip ex ea commodo consequat. Duis aute irure dolor in
             reprehenderit
           </p>
-          <div class="flex flex-row gap-[24px]">
+          <div class="flex flex-row gap-[12px] md:gap-[24px]">
             <v-icon
               icon="mdi mdi-instagram"
               class="!text-[24px] text-white"
@@ -26,7 +26,7 @@
             ></v-icon>
           </div>
         </div>
-        <div class="flex flex-col w-1/3 gap-[8px]">
+        <div class="flex flex-col w-full md:w-1/3 gap-[8px] max-sm:mt-[24px]">
           <h3 class="text-white text-[16px] font-bold">Contact Info</h3>
           <div class="flex flex-row gap-[8px]">
             <v-icon
