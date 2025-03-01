@@ -14,6 +14,11 @@
     teamName="Oklahoma City Thunder"
     message="It is good to analyse the overall movement and shape of the team, for example to identify areas that were not defended during training. The players are asked to check and watch the video every day."
   />
+  <br />
+  <FAQCard
+    question="What Is Basketball?"
+    answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
+  />
 </template>
 
 <script setup>
@@ -23,4 +28,5 @@ import FeatureCardImg from "@assets/img/features/ToddBoehly.png";
 import ClientCard from "@components/cards/ClientCard.vue";
 import profileImg from "@assets/img/clients/client1.png";
 import teamImg from "@assets/img/company Logo/Logo.png";
+import FAQCard from "../../components/cards/FAQCard.vue";
 </script>
