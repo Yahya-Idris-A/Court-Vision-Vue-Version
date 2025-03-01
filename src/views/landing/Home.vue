@@ -1,47 +1,96 @@
 <template>
-  <div
-    class="relative mx-[80px] h-[500px] flex flex-col justify-center items-center text-center mt-[32px]"
-  >
-    <!-- Carousel sebagai background -->
-    <div class="absolute inset-0 w-full h-full overflow-hidden" v-if="isLoaded">
-      <v-carousel
-        cycle
-        interval="4000"
-        hide-delimiter-background
-        :show-arrows="false"
-        class="w-full h-full rounded-[15px]"
-      >
-        <v-carousel-item
-          v-for="(item, i) in items"
-          :key="i"
-          :src="item.src"
-          cover
-        ></v-carousel-item>
-      </v-carousel>
-    </div>
-
-    <!-- Konten di atas carousel -->
+  <div class="mx-[100px] max-sm:mx-[20px]">
     <div
-      class="mt-[32px] flex flex-col items-center justify-center xl:gap-[24px] gap-[5px] relative z-10"
+      class="relative h-[500px] flex flex-col justify-center items-center text-center mt-[32px]"
     >
-      <h1
-        class="xl:text-[120px] md:text-[54px] lg:text-[84px] text-[34px] font-semibold text-white text-center xl:mx-[209px] lg:mx-[100px] md:mx-[100px] mx-0 xl:leading-[100px] lg:leading-[80px] md:leading-[50px] leading-[40px]"
+      <!-- Carousel -->
+      <div
+        class="absolute inset-0 w-full h-full overflow-hidden"
+        v-if="isLoaded"
       >
-        Revolutionize Your Basketball Analysis!
-      </h1>
-      <h5
-        class="xl:text-[24px] lg:text-[14px] text-[8px] font-normal text-white mb-[88px] xl:leading-[40px] leading-[10px] xl:mt-[14px] lg:mt-[24px] md:mt-[8px] mt-0 text-center"
+        <v-carousel
+          cycle
+          interval="4000"
+          hide-delimiter-background
+          :show-arrows="false"
+          class="w-full h-full rounded-[15px]"
+        >
+          <v-carousel-item
+            v-for="(item, i) in items"
+            :key="i"
+            :src="item.src"
+            cover
+          ></v-carousel-item>
+        </v-carousel>
+      </div>
+
+      <!-- Hero Section -->
+      <div
+        class="mt-[32px] flex flex-col items-center justify-center xl:gap-[24px] gap-[5px] relative z-10"
       >
-        Upload, Analyze, and Improve – Gain Deeper Insights from Your Matches
-        Instantly
-      </h5>
+        <h1
+          class="xl:text-[120px] md:text-[54px] lg:text-[84px] text-[34px] font-semibold text-white text-center xl:mx-[209px] lg:mx-[100px] md:mx-[100px] mx-0 xl:leading-[100px] lg:leading-[80px] md:leading-[50px] leading-[40px]"
+        >
+          Revolutionize Your Basketball Analysis!
+        </h1>
+        <h5
+          class="xl:text-[24px] lg:text-[14px] text-[8px] font-normal text-white mb-[88px] xl:leading-[40px] leading-[10px] xl:mt-[14px] lg:mt-[24px] md:mt-[8px] mt-0 text-center"
+        >
+          Upload, Analyze, and Improve – Gain Deeper Insights from Your Matches
+          Instantly
+        </h5>
+      </div>
+    </div>
+    <h1
+      class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
+    >
+      How It Works
+    </h1>
+    <div
+      class="flex flex-row justify-between items-center gap-10 max-sm:gap-2.5 max-xl:gap-4"
+    >
+      <FeatureCard
+        :cover="FeatureCardImg"
+        heading="Upload"
+        description="Your Existing Video"
+      />
+      <div
+        class="flex justify-center items-center relative arrow-container max-lg:hidden"
+      >
+        <div class="arrow-line-start xl:w-[10px] xl:h-[10px]"></div>
+        <div class="arrow-line-solid"></div>
+        <img
+          src="@assets/img/icon/headArrow.png"
+          alt=""
+          loading="lazy"
+          class="head-arrow-icon"
+        />
+      </div>
+      <FeatureCard
+        :cover="FeatureCardImg"
+        heading="Analyse"
+        description="With Tools and Data"
+      />
+      <div
+        class="flex justify-center items-center relative arrow-container max-lg:hidden"
+      >
+        <div class="arrow-line-start"></div>
+        <div class="arrow-line-solid"></div>
+        <img
+          src="@assets/img/icon/headArrow.png"
+          alt=""
+          loading="lazy"
+          class="head-arrow-icon"
+        />
+      </div>
+      <FeatureCard
+        :cover="FeatureCardImg"
+        heading="Improve"
+        description="Your Team"
+      />
     </div>
   </div>
-  <FeatureCard
-    :cover="FeatureCardImg"
-    heading="Upload"
-    description="Your Existing Video"
-  />
+
   <br />
   <ClientCard
     :profileImg="profileImg"
@@ -84,9 +133,8 @@ const basicBenefit = [
 
 import { ref, onMounted } from "vue";
 
-// Inisialisasi array gambar untuk carousel
 const items = ref([]);
-const isLoaded = ref(false); // Tambahkan state untuk menunggu loading
+const isLoaded = ref(false); // Tambahkan state untuk menunggu loading biar carousel tidak menampilkan gambar abu-abu
 
 // Mengimpor semua gambar dari folder carousel
 const modules = import.meta.glob(
@@ -100,7 +148,7 @@ const importImages = async () => {
     imageList.push({ src: module.default });
   }
   items.value = imageList;
-  isLoaded.value = true; // Tandai bahwa gambar telah dimuat
+  isLoaded.value = true; // gambar sudah keload
 };
 
 onMounted(importImages);
@@ -108,9 +156,70 @@ onMounted(importImages);
 
 <style scoped>
 ::v-deep(.v-carousel__controls button) {
-  color: #fd6a2a !important; /* Warna teks tombol */
-  border-radius: 50% !important; /* Membuat tombol berbentuk bulat */
-  width: 15px; /* Ubah ukuran tombol */
+  color: #fd6a2a !important;
+  border-radius: 50% !important;
+  width: 15px;
   height: 15px;
+}
+
+.arrow-container {
+  width: 100%;
+  max-width: 200px;
+}
+
+.arrow-line-start {
+  background-color: #fd6a2a;
+  border-radius: 3px;
+  width: 10px;
+  height: 40px;
+  position: absolute;
+  left: 15px;
+}
+
+.arrow-line-solid {
+  background-color: #fd6a2a;
+  width: 80%;
+  height: 10px;
+}
+
+.head-arrow-icon {
+  max-height: 40px;
+  height: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: absolute;
+  right: 0;
+}
+
+@media (max-width: 1440px) {
+  .arrow-container {
+    width: 100%;
+    max-width: 80px;
+  }
+
+  .arrow-line-start {
+    background-color: #fd6a2a;
+    border-radius: 3px;
+    width: 6px;
+    height: 30px;
+    position: absolute;
+    left: 10px;
+  }
+
+  .arrow-line-solid {
+    background-color: #fd6a2a;
+    width: 70%;
+    height: 6px;
+  }
+
+  .head-arrow-icon {
+    max-height: 24px;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
+    position: absolute;
+    right: 0;
+  }
 }
 </style>
