@@ -115,13 +115,34 @@
         </div>
       </div>
     </div>
+    <!-- FAQ Section -->
+    <h1
+      class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
+    >
+      Frequently Asked Question
+    </h1>
+    <div class="flex flex-col gap-[32px] max-sm:gap-[20px] py-4">
+      <FAQCard
+        question="What Is Basketball?"
+        answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
+      />
+      <FAQCard
+        question="What Is Basketball?"
+        answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
+      />
+      <FAQCard
+        question="What Is Basketball?"
+        answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
+      />
+      <FAQCard
+        question="What Is Basketball?"
+        answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
+      />
+    </div>
   </div>
 
   <br />
-  <FAQCard
-    question="What Is Basketball?"
-    answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
-  />
+
   <br />
   <PricingCard
     pricing-icon="mdi mdi-lightning-bolt-circle"
