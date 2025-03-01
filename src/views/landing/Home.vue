@@ -139,18 +139,39 @@
         answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
       />
     </div>
+    <!-- Pricing Section -->
+    <h1
+      class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
+    >
+      Pricing
+    </h1>
+    <div
+      class="flex max-sm:flex-wrap max-sm:justify-center flex-row items-center gap-[32px] max-xl:gap-[16px] max-sm:gap-[10px] justify-between w-full py-4"
+    >
+      <PricingCard
+        pricing-icon="mdi mdi-lightning-bolt-circle"
+        pricing-type="Basic"
+        cost="$9 per month"
+        bill-method="Billed every month"
+        :benefit="basicBenefit"
+      />
+      <PricingCard
+        pricing-icon="mdi mdi-lightning-bolt-circle"
+        pricing-type="Basic"
+        cost="$9 per month"
+        bill-method="Billed every month"
+        :benefit="basicBenefit"
+      />
+      <PricingCard
+        pricing-icon="mdi mdi-lightning-bolt-circle"
+        pricing-type="Basic"
+        cost="$9 per month"
+        bill-method="Billed every month"
+        :benefit="basicBenefit"
+      />
+    </div>
   </div>
-
-  <br />
-
-  <br />
-  <PricingCard
-    pricing-icon="mdi mdi-lightning-bolt-circle"
-    pricing-type="Basic"
-    cost="$9 per month"
-    bill-method="Billed every month"
-    :benefit="basicBenefit"
-  />
+  <br /><br /><br />
 </template>
 
 <script setup>
