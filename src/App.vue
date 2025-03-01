@@ -1,9 +1,10 @@
 <template>
+  <BasicNavbar />
   <router-view></router-view>
 </template>
 
 <script setup>
-import UploadFile from "./components/UploadFile.vue";
+import BasicNavbar from "@components/navbar/BasicNavbar.vue";
 </script>
 
 <style scoped></style>
