@@ -22,14 +22,14 @@
         <div class="">
           <ul class="flex max-sm:flex-col items-center gap-[64px]">
             <li>
-              <a
+              <router-link
+                to="/"
                 class="hover:text-[#FD6A2A] text-[20px] font-semibold"
                 :class="
                   $route.name == 'Home' ? 'text-[#FD6A2A]' : 'text-[#667085]'
                 "
-                href=""
-                >Home</a
-              >
+                >Home
+              </router-link>
             </li>
             <li>
               <a
@@ -67,7 +67,8 @@
         </div>
         <!-- login button -->
         <div class="">
-          <button
+          <router-link
+            to="/authentication"
             class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer"
           >
             Log In
@@ -76,7 +77,7 @@
               class="size-[24px]"
               alt=""
             />
-          </button>
+          </router-link>
         </div>
       </div>
       <v-icon
