@@ -1,5 +1,6 @@
 <template>
   <div class="mx-[100px] max-sm:mx-[20px]">
+    <!-- Hero Section -->
     <div
       class="relative h-[500px] flex flex-col justify-center items-center text-center mt-[32px]"
     >
@@ -24,7 +25,7 @@
         </v-carousel>
       </div>
 
-      <!-- Hero Section -->
+      <!-- Hero Section Content -->
       <div
         class="mt-[32px] flex flex-col items-center justify-center xl:gap-[24px] gap-[5px] relative z-10"
       >
@@ -41,6 +42,7 @@
         </h5>
       </div>
     </div>
+    <!-- Feature Section -->
     <h1
       class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
     >
@@ -89,17 +91,32 @@
         description="Your Team"
       />
     </div>
+    <!-- Client Section -->
+    <h1
+      class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
+    >
+      Our Clients
+    </h1>
+    <div class="relative overflow-hidden w-full">
+      <div ref="scrollContainer" class="flex gap-4 w-full overflow-hidden">
+        <div
+          v-for="(review, index) in displayedReviews"
+          :key="index"
+          class="flex-shrink-0 w-[43.33%] p-4 max-sm:w-[100%] max-xl:w-[80%]"
+        >
+          <ClientCard
+            :profileImg="profileImg"
+            username="Danny Barth"
+            position="Executive Vice President"
+            :teamImg="teamImg"
+            teamName="Oklahoma City Thunder"
+            message="It is good to analyse the overall movement and shape of the team, for example to identify areas that were not defended during training. The players are asked to check and watch the video every day."
+          />
+        </div>
+      </div>
+    </div>
   </div>
 
-  <br />
-  <ClientCard
-    :profileImg="profileImg"
-    username="Danny Barth"
-    position="Executive Vice President"
-    :teamImg="teamImg"
-    teamName="Oklahoma City Thunder"
-    message="It is good to analyse the overall movement and shape of the team, for example to identify areas that were not defended during training. The players are asked to check and watch the video every day."
-  />
   <br />
   <FAQCard
     question="What Is Basketball?"
@@ -131,7 +148,7 @@ const basicBenefit = [
   "Basic chat and email support",
 ];
 
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 
 const items = ref([]);
 const isLoaded = ref(false); // Tambahkan state untuk menunggu loading biar carousel tidak menampilkan gambar abu-abu
@@ -151,7 +168,43 @@ const importImages = async () => {
   isLoaded.value = true; // gambar sudah keload
 };
 
-onMounted(importImages);
+const reviews = ref([
+  { client: "John Doe", feedback: "Website ini sangat membantu!" },
+  { client: "Jane Smith", feedback: "Sangat user-friendly dan cepat." },
+  { client: "Michael Lee", feedback: "Fitur analitiknya luar biasa!" },
+  { client: "Alice Brown", feedback: "Sangat direkomendasikan!" },
+]);
+
+// Duplikasi array agar loop seamless
+const displayedReviews = ref([...reviews.value, ...reviews.value]);
+
+const scrollContainer = ref(null);
+
+// Fungsi Auto Scrolling ke Kiri
+const startScrolling = () => {
+  let scrollSpeed = 1; // Kecepatan scroll
+  setInterval(() => {
+    if (scrollContainer.value) {
+      scrollContainer.value.scrollLeft += scrollSpeed;
+      // Jika sudah melewati setengah konten, reset ke awal
+      if (
+        scrollContainer.value.scrollLeft >=
+        scrollContainer.value.scrollWidth / 2
+      ) {
+        scrollContainer.value.scrollLeft = 0;
+      }
+    }
+  }, 30); // Delay antar pergeseran (atur sesuai kebutuhan)
+};
+
+onMounted(async () => {
+  await nextTick(); // Menunggu hingga DOM selesai dirender
+  startScrolling();
+});
+
+onMounted(() => {
+  importImages();
+});
 </script>
 
 <style scoped>
