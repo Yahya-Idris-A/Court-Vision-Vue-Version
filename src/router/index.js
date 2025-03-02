@@ -6,6 +6,8 @@ import {
 import Home from "@views/landing/Home.vue";
 import SignIn from "../views/Auth/SignIn.vue";
 import SignUp from "@views/Auth/SignUp.vue";
+import Analyze from "@views/Profile/Analyze.vue";
+
 const routes = [
   {
     path: "/",
@@ -21,6 +23,11 @@ const routes = [
     path: "/sign-up",
     name: "SignUp",
     component: SignUp,
+  },
+  {
+    path: "/profile/analyze",
+    name: "Analyze",
+    component: Analyze,
   },
 ];
 
