@@ -1,6 +1,11 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from "vue-router";
 import Home from "@views/landing/Home.vue";
-import Authentication from "@views/Auth/Authentication.vue";
+import SignIn from "../views/Auth/SignIn.vue";
+import SignUp from "@views/Auth/SignUp.vue";
 const routes = [
   {
     path: "/",
@@ -8,14 +13,19 @@ const routes = [
     component: Home,
   },
   {
-    path: "/authentication ",
-    name: "Authentication",
-    component: Authentication,
+    path: "/sign-in",
+    name: "SignIn",
+    component: SignIn,
+  },
+  {
+    path: "/sign-up",
+    name: "SignUp",
+    component: SignUp,
   },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };

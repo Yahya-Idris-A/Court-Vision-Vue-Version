@@ -6,7 +6,7 @@
 
 <script setup>
 import BasicNavbar from "@components/navbar/BasicNavbar.vue";
-import BasicFooter from "./components/partials/Footer.vue";
+import BasicFooter from "./components/Footer/Footer.vue";
 </script>
 
 <style scoped></style>

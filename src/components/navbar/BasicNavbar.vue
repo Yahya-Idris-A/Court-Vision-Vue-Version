@@ -68,7 +68,7 @@
         <!-- login button -->
         <div class="">
           <router-link
-            to="/authentication"
+            to="/sign-in"
             class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer"
           >
             Log In
