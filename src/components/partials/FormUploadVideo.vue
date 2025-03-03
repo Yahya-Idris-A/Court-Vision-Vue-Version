@@ -167,11 +167,11 @@ onMounted(() => {
 });
 
 // Clean up Uppy when component is destroyed
-onBeforeUnmount(() => {
-  if (uppy.value) {
-    uppy.value.close();
-  }
-});
+// onBeforeUnmount(() => {
+//   if (uppy.value) {
+//     uppy.value.close();
+//   }
+// });
 
 // Methods
 function openUppy() {

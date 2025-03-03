@@ -7,6 +7,7 @@ import Home from "@views/landing/Home.vue";
 import SignIn from "../views/Auth/SignIn.vue";
 import SignUp from "@views/Auth/SignUp.vue";
 import Analyze from "@views/Profile/Analyze.vue";
+import MyAnalyze from "@views/Profile/MyAnalyze.vue";
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: "/profile/analyze",
     name: "Analyze",
     component: Analyze,
+  },
+  {
+    path: "/profile/myanalyze",
+    name: "My Analyze",
+    component: MyAnalyze,
   },
 ];
 

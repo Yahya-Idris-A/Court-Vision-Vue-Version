@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col justify-start items-center bg-white stroke-[#667085] shadow gap-[8px] min-h-screen"
+    class="flex flex-col justify-start items-center bg-white stroke-[#667085] shadow gap-[8px] min-h-screen h-full"
     :class="isMenuOpen ? 'w-[30%]' : 'max-w-fit'"
   >
     <!-- Logo and Indent -->
@@ -94,7 +94,7 @@
       </router-link>
       <!-- Btn My Analyze -->
       <router-link
-        to=""
+        to="/profile/myanalyze"
         class="flex flex-row justify-start items-center w-full px-[16px] rounded-[6px] py-[8px] cursor-pointer"
         :class="$route.name == 'My Analyze' ? 'bg-[#FD6A2A]' : 'bg-white'"
       >
