@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center gap-[10px] w-full mt-[32px] max-sm:mt-[16px]"
+    class="flex flex-col items-center gap-[10px] w-full mt-[32px] mr-[20px] max-sm:mt-[16px]"
   >
     <!-- Header -->
     <div
@@ -15,28 +15,28 @@
         title="OKC VS Cavs.mp4"
         date="12/12/2012"
         :uploadProgress="10"
-        detailAnalysisUrl=""
+        detailAnalysisUrl="/profile/detail-analyze"
       />
       <VideosCard
         :thumbnail="thumbnail"
         title="OKC VS Cavs.mp4"
         date="12/12/2012"
         :uploadProgress="50"
-        detailAnalysisUrl=""
+        detailAnalysisUrl="/profile/detail-analyze"
       />
       <VideosCard
         :thumbnail="thumbnail"
         title="OKC VS Cavs.mp4"
         date="12/12/2012"
         :uploadProgress="80"
-        detailAnalysisUrl=""
+        detailAnalysisUrl="/profile/detail-analyze"
       />
       <VideosCard
         :thumbnail="thumbnail"
         title="OKC VS Cavs.mp4"
         date="12/12/2012"
         :uploadProgress="100"
-        detailAnalysisUrl=""
+        detailAnalysisUrl="/profile/detail-analyze"
       />
     </div>
   </div>

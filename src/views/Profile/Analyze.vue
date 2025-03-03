@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center gap-[10px] w-full mt-[32px] max-sm:mt-[16px]"
+    class="flex flex-col items-center gap-[10px] w-full mt-[32px] mr-[20px] max-sm:mt-[16px]"
   >
     <!-- Header -->
     <div

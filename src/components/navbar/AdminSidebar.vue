@@ -94,21 +94,29 @@
       </router-link>
       <!-- Btn My Analyze -->
       <router-link
-        to="/profile/myanalyze"
+        to="/profile/my-analyze"
         class="flex flex-row justify-start items-center w-full px-[16px] rounded-[6px] py-[8px] cursor-pointer"
-        :class="$route.name == 'My Analyze' ? 'bg-[#FD6A2A]' : 'bg-white'"
+        :class="
+          $route.name == 'My Analyze' || $route.name == 'Detail Analyze'
+            ? 'bg-[#FD6A2A]'
+            : 'bg-white'
+        "
       >
         <v-icon
           icon="mdi mdi-clipboard-check-multiple-outline"
           class="!text-[40px] max-sm:!text-[30px]"
           :class="
-            $route.name == 'My Analyze' ? 'text-white' : '!text-[#4B465C]'
+            $route.name == 'My Analyze' || $route.name == 'Detail Analyze'
+              ? 'text-white'
+              : '!text-[#4B465C]'
           "
         ></v-icon>
         <h2
           class="text-[#4B465C] text-[20px] font-normal ml-[8px] max-sm:hidden"
           :class="[
-            $route.name == 'My Analyze' ? 'text-white' : '!text-[#4B465C]',
+            $route.name == 'My Analyze' || $route.name == 'Detail Analyze'
+              ? 'text-white'
+              : '!text-[#4B465C]',
             isMenuOpen ? '' : 'hidden',
           ]"
         >
