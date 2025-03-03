@@ -1,9 +1,7 @@
 <template>
   <div
     class="flex flex-col justify-start items-center bg-white stroke-[#667085] shadow gap-[8px] min-h-screen"
-    :class="
-      isMenuOpen ? 'xl:max-w-[15%] max-w-[25%] max-sm:max-w-fit' : 'max-w-fit'
-    "
+    :class="isMenuOpen ? 'w-[30%]' : 'max-w-fit'"
   >
     <!-- Logo and Indent -->
     <div
