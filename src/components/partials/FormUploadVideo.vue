@@ -3,34 +3,29 @@
     <!-- Custom UI drop zone that triggers Uppy functionality -->
     <div
       class="drop-zone border-[2px] border-dashed border-[#9e9e9e] rounded-[8px] px-[40px] py-[20px] cursor-pointer mb-[15px] transition-all duration-300 ease-in text-center hover:border-[#FD6A2A]"
-      @click="openUppy"
+      @click="triggerFileInput"
       :class="{ 'border-[#FD6A2A]': isDragging }"
     >
       <div class="flex flex-col justify-center items-center">
         <div class="mb-[10px]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FF6E31"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-            <line x1="10" y1="15" x2="10" y2="9"></line>
-            <line x1="14" y1="15" x2="14" y2="9"></line>
-            <line x1="7" y1="12" x2="17" y2="12"></line>
-          </svg>
+          <v-icon
+            icon="mdi mdi-video-plus-outline"
+            class="!text-[80px] !text-[#FD6A2A] max-sm:!text-[30px]"
+          ></v-icon>
         </div>
         <p class="!text-[#FD6A2A] !text-[16px] m-0">
           Browse Video or Drag Here to Upload
         </p>
       </div>
     </div>
-
+    <!-- Hidden file input to trigger native file selection -->
+    <input
+      type="file"
+      ref="fileInput"
+      @change="handleFileSelect"
+      accept="video/*"
+      style="display: none"
+    />
     <!-- Hidden Uppy Dashboard (used for file picking but not displayed) -->
     <div id="uppy-dashboard" style="display: none"></div>
 
@@ -81,6 +76,7 @@ import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 
 // State variables
+const fileInput = ref(null);
 const selectedFile = ref(null);
 const isDragging = ref(false);
 const uploadProgress = ref(0);
@@ -174,11 +170,22 @@ onMounted(() => {
 // });
 
 // Methods
-function openUppy() {
-  const dashboard = uppy.value.getPlugin("Dashboard");
-  if (dashboard) {
-    dashboard.openModal();
-    console.log("browse");
+// Methods
+function triggerFileInput() {
+  fileInput.value.click();
+}
+
+function handleFileSelect(event) {
+  const files = event.target.files;
+  if (files.length > 0) {
+    const file = files[0];
+    // Add file to Uppy
+    uppy.value.addFile({
+      source: "file input",
+      name: file.name,
+      type: file.type,
+      data: file,
+    });
   }
 }
 
