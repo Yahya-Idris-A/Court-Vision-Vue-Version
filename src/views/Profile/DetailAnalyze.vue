@@ -1,7 +1,6 @@
 <template>
   <div
-    ref="containerRef"
-    class="flex flex-col items-center gap-[10px] w-full mt-[32px] mr-[20px] max-sm:mt-[16px] container-to-get-max-width"
+    class="flex flex-col items-center gap-[10px] w-full mt-[32px] max-sm:mt-[16px]"
   >
     <!-- Header -->
     <div

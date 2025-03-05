@@ -7,7 +7,9 @@
     <AdminSidebar />
     <div class="flex flex-col items-center justify-start min-h-screen w-full">
       <AdminNavbar />
-      <router-view></router-view>
+      <div class="pr-[10px] w-full">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
   <router-view v-if="!isAdminRoute"></router-view>

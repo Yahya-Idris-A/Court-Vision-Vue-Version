@@ -5,12 +5,12 @@
     <!-- Team Select -->
     <div class="flex flex-row gap-[50px] justify-center items-center">
       <button
-        class="text-[32px] text-white font-semibold py-[10px] px-[40px] bg-[#FD6A2A] rounded-[40px]"
+        class="text-[32px] max-sm:text-[16px] text-white font-semibold py-[10px] px-[40px] max-sm:px-[20px] bg-[#FD6A2A] rounded-[40px]"
       >
         Team A
       </button>
       <button
-        class="text-[32px] text-white font-semibold py-[10px] px-[40px] bg-[#FD6A2A] rounded-[40px]"
+        class="text-[32px] max-sm:text-[16px] text-white font-semibold py-[10px] px-[40px] max-sm:px-[20px] bg-[#FD6A2A] rounded-[40px]"
       >
         Team B
       </button>
@@ -19,25 +19,34 @@
     <div class="flex flex-row gap-[10px] justify-start items-center w-full">
       <v-icon
         icon="mdi mdi-basketball"
-        class="!text-[30px] !text-[#667085] max-sm:!text-[30px]"
+        class="!text-[30px] !text-[#667085] max-sm:!text-[20px]"
       ></v-icon>
-      <p class="text-[15px] text-[#667085] font-semibold">Team Event Shotmap</p>
+      <p class="text-[15px] max-sm:text-[10px] text-[#667085] font-semibold">
+        Team Event Shotmap
+      </p>
     </div>
     <!-- Shotmap -->
-    <div class="flex flex-row gap-[30px] justify-start w-full">
-      <ShotMap />
-      <div class="flex flex-col gap-[20px] justify-start w-full">
-        <h1>Team A</h1>
+    <div class="flex flex-row gap-[30px] max-sm:gap-[8px] justify-start w-full">
+      <div class="flex w-1/2">
+        <ShotMap />
+      </div>
+      <div
+        class="flex flex-col gap-[20px] max-sm:gap-[8px] justify-start w-1/2"
+      >
+        <h1 class="text-[24px] max-sm:text-[14px] text-[#4B465C] font-semibold">
+          Team A
+        </h1>
         <div class="flex flex-row gap-[10px] justify-start items-center w-full">
           <div class="flex flex-col gap-[10px] justify-start w-1/2">
             <v-checkbox
-              class="text-black custom-checkbox"
+              class="text-black custom-checkbox max-sm:!text-[8px]"
               :ripple="false"
               density="compact"
               hide-details="auto"
             >
               <template v-slot:label>
-                <span class="text-[14px] font-semibold !text-[#667085]"
+                <span
+                  class="text-[14px] max-sm:text-[8px] font-semibold !text-[#667085]"
                   >Player 1</span
                 >
               </template>
@@ -45,13 +54,14 @@
           </div>
           <div class="flex flex-col gap-[10px] justify-start w-1/2">
             <v-checkbox
-              class="text-black custom-checkbox"
+              class="text-black custom-checkbox max-sm:!text-[8px]"
               :ripple="false"
               density="compact"
               hide-details="auto"
             >
               <template v-slot:label>
-                <span class="text-[14px] font-semibold !text-[#667085]"
+                <span
+                  class="text-[14px] max-sm:text-[8px] font-semibold !text-[#667085]"
                   >Player 9</span
                 >
               </template>
@@ -64,12 +74,14 @@
     <div class="flex flex-row gap-[10px] justify-start items-center w-full">
       <v-icon
         icon="mdi mdi-basketball"
-        class="!text-[30px] !text-[#667085] max-sm:!text-[30px]"
+        class="!text-[30px] !text-[#667085] max-sm:!text-[20px]"
       ></v-icon>
-      <p class="text-[15px] text-[#667085] font-semibold">Team Event Heatmap</p>
+      <p class="text-[15px] max-sm:text-[10px] text-[#667085] font-semibold">
+        Team Event Heatmap
+      </p>
     </div>
     <!-- Heatmap -->
-    <HeatMap :width="840" :height="450" />
+    <!-- <HeatMap :width="840" :height="450" /> -->
   </div>
 </template>
 

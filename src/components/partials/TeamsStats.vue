@@ -4,15 +4,23 @@
   >
     <!-- Team Name -->
     <div class="flex flex-row gap-[50px] justify-center items-center">
-      <div class="flex flex-row items-center justify-end w-[300px]">
+      <div class="flex flex-row items-center justify-end">
         <!-- <h3 class="text-[24px] text-[#4B465C] font-semibold">
             Oklahoma City Thunder
           </h3> -->
-        <img src="@assets/img/team/Home.png" alt="" class="size-[120px]" />
+        <img
+          src="@assets/img/team/Home.png"
+          alt=""
+          class="size-[120px] max-sm:size-[60px]"
+        />
       </div>
       <h1 class="text-[36px] text-[#4B465C] font-semibold">VS</h1>
-      <div class="flex flex-row items-center justify-start w-[300px]">
-        <img src="@assets/img/team/Away.png" alt="" class="size-[120px]" />
+      <div class="flex flex-row items-center justify-start">
+        <img
+          src="@assets/img/team/Away.png"
+          alt=""
+          class="size-[120px] max-sm:size-[60px]"
+        />
         <!-- <h3 class="text-[24px] text-[#4B465C] font-semibold">
             Cleveland Cavaliers
           </h3> -->
@@ -21,9 +29,15 @@
     <!-- Total Shots -->
     <div class="flex flex-col w-full justify-center items-center">
       <div class="flex flex-row justify-between w-full">
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
-        <h1 class="text-[36px] text-[#4B465C] font-semibold">Total Shots</h1>
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
+        <h1 class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          Total Shots
+        </h1>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
       </div>
       <div class="overflow-hidden rounded-[10px] bg-[#403D91] h-[20px] w-full">
         <div
@@ -35,9 +49,15 @@
     <!-- 3 Pointers -->
     <div class="flex flex-col w-full justify-center items-center">
       <div class="flex flex-row justify-between w-full">
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
-        <h1 class="text-[36px] text-[#4B465C] font-semibold">3 Pointers</h1>
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
+        <h1 class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          3 Pointers
+        </h1>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
       </div>
       <div class="overflow-hidden rounded-[10px] bg-[#403D91] h-[20px] w-full">
         <div
@@ -49,9 +69,15 @@
     <!-- 2 Pointers -->
     <div class="flex flex-col w-full justify-center items-center">
       <div class="flex flex-row justify-between w-full">
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
-        <h1 class="text-[36px] text-[#4B465C] font-semibold">2 Pointers</h1>
-        <p class="text-[36px] text-[#4B465C] font-semibold">10</p>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
+        <h1 class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          2 Pointers
+        </h1>
+        <p class="text-[36px] max-sm:text-[20px] text-[#4B465C] font-semibold">
+          10
+        </p>
       </div>
       <div class="overflow-hidden rounded-[10px] bg-[#403D91] h-[20px] w-full">
         <div
