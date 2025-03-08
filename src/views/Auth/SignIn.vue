@@ -62,7 +62,7 @@
 <script setup>
 import AuthenticationCard from "../../components/cards/AuthenticationCard.vue";
 
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 
 const password = ref("");
 const showPassword = ref(false);

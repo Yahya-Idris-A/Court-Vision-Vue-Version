@@ -81,7 +81,7 @@
       </p>
     </div>
     <!-- Heatmap -->
-    <!-- <HeatMap :width="840" :height="450" /> -->
+    <HeatMap />
   </div>
 </template>
 

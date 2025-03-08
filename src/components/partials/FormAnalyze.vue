@@ -77,66 +77,17 @@ import UploadVideo from "@components/partials/FormUploadVideo.vue";
 
 import { ref, computed } from "vue";
 
-const date = ref(""); // Untuk menyimpan tanggal dalam format yang ditampilkan
+const date = ref(""); // Untuk nyimpan tanggal dalam format yang ditampilkan
 const menu = ref(false); // Mengontrol tampilan modal date picker
 const formattedDate = computed(() => {
   return date.value ? new Date(date.value).toLocaleDateString("id-ID") : "";
 });
 
-// Fungsi menyimpan tanggal dan menutup modal
+// Fungsi nyimpan tanggal dan menutup modal
 const saveDate = (newDate) => {
   date.value = newDate; // Simpan tanggal yang dipilih
   menu.value = false; // Tutup modal
 };
-
-// import { ref } from "vue";
-// import axios from "axios";
-
-// // Reactive variables
-// const files = ref([]);
-// const uploadedVideo = ref([]);
-// const showProgress = ref(false);
-
-// const uploadVideo = (event) => {
-//   const file = event.target.files[0];
-//   if (!file) return;
-
-//   const filename =
-//     file.name.length >= 12
-//       ? file.name.substring(0, 13) + "... ." + file.name.split(".")[1]
-//       : file.name;
-//   const formData = new FormData();
-//   formData.append("file", file);
-//   console.log(filename);
-
-//   files.value.push({ name: filename, loading: 0 });
-//   showProgress.value = true;
-
-//   // Upload file pake Axios
-//   axios
-//     .post("API", formData, {
-//       onUploadProgress: ({ loaded, total }) => {
-//         const progress = Math.floor((loaded / total) * 100);
-//         files.value[files.value.length - 1].loading = progress;
-
-//         if (loaded === total) {
-//           const fileSize =
-//             total < 1024
-//               ? `${total} KB`
-//               : `${(total / (1024 * 1024)).toFixed(2)} MB`;
-//           uploadedVideo.value.push({ name: filename, size: fileSize });
-
-//           // Reset files and progress state
-//           files.value = [];
-//           showProgress.value = false;
-//         }
-//       },
-//     })
-//     .catch((error) => {
-//       console.error("Upload failed:", error);
-//       showProgress.value = false;
-//     });
-// };
 </script>
 
 <style scoped>
@@ -164,12 +115,6 @@ body {
 img {
   width: 100%;
 }
-
-/* .icon {
-  width: 90px;
-  height: 90px;
-  background: green;
-} */
 
 .upload-box {
   width: 100vw;

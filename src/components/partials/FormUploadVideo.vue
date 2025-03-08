@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mx-[112px]">
-    <!-- Custom UI drop zone that triggers Uppy functionality -->
+    <!-- UI drop zone that triggers Uppy functionality -->
     <div
       class="drop-zone border-[2px] border-dashed border-[#9e9e9e] rounded-[8px] px-[40px] py-[20px] cursor-pointer mb-[15px] transition-all duration-300 ease-in text-center hover:border-[#FD6A2A]"
       @click="triggerFileInput"
@@ -94,7 +94,7 @@ onMounted(() => {
     },
   });
 
-  // Add Dashboard plugin (hidden, but used for file selection)
+  // Nambah Dashboard plugin tapi hidden
   uppy.value.use(Dashboard, {
     inline: true,
     target: "#uppy-dashboard",
@@ -102,14 +102,14 @@ onMounted(() => {
     showProgressDetails: true,
   });
 
-  // Add XHR Upload plugin
+  // Nambah XHR Upload plugin
   uppy.value.use(XHRUpload, {
     endpoint: "https://your-api-endpoint.com/upload",
     formData: true,
     fieldName: "video",
   });
 
-  // Add drop target for the custom UI
+  // Nambah drop target
   uppy.value.use(DropTarget, {
     target: document.querySelector(".drop-zone"),
   });
@@ -162,15 +162,13 @@ onMounted(() => {
   });
 });
 
-// Clean up Uppy when component is destroyed
+// Clean up Uppy when component is destroyed (masih error)
 // onBeforeUnmount(() => {
 //   if (uppy.value) {
 //     uppy.value.close();
 //   }
 // });
 
-// Methods
-// Methods
 function triggerFileInput() {
   fileInput.value.click();
 }

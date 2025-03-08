@@ -236,7 +236,7 @@ const startScrolling = () => {
         scrollContainer.value.scrollLeft = 0;
       }
     }
-  }, 30); // Delay antar pergeseran (atur sesuai kebutuhan)
+  }, 30); // Delay antar pergeseran
 };
 
 onMounted(async () => {

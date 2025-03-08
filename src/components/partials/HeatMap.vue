@@ -1,226 +1,170 @@
 <template>
-  <div id="basketballCourt"></div>
+  <div class="relative w-full" ref="courtContainer">
+    <!-- Court image -->
+    <img
+      ref="courtImage"
+      src="@assets/img/court/Heatmap.svg"
+      alt="Basketball Court"
+      class="w-full"
+      @load="onImageLoad"
+    />
+  </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
-const props = defineProps({
-  width: Number,
-  height: Number,
-});
+const courtContainer = ref(null);
+const courtImage = ref(null);
+let heatmapInstance = null;
 
-function drawBasketballCourt() {
-  const width = props.width;
-  const height = props.height;
+// Ukuran asli lapangan (misalnya dalam meter, sesuai dengan data koordinat)
+const COURT_WIDTH = 28; // FIBA: 28m, NBA: 94ft
+const COURT_HEIGHT = 15; // FIBA: 15m, NBA: 50ft
+const scaleX = ref(0);
+const scaleY = ref(0);
 
-  const lineColor = "#FFFFFF";
-  const courtColor = "#F2A93B";
-  const svgNS = "http://www.w3.org/2000/svg";
+// Load heatmap.js from CDN
+const loadHeatmapJs = () => {
+  return new Promise((resolve, reject) => {
+    // Check if already loaded
+    if (window.h337) {
+      resolve(window.h337);
+      return;
+    }
 
-  const scaleX = width / 28.65;
-  const scaleY = height / 15.24;
+    const script = document.createElement("script");
+    script.src =
+      "https://cdnjs.cloudflare.com/ajax/libs/heatmap.js/2.0.2/heatmap.min.js";
+    script.async = true;
 
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("width", width);
-  svg.setAttribute("height", height);
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    script.onload = () => {
+      resolve(window.h337);
+    };
 
-  const courtBackground = document.createElementNS(svgNS, "rect");
-  courtBackground.setAttribute("x", 0);
-  courtBackground.setAttribute("y", 0);
-  courtBackground.setAttribute("width", width);
-  courtBackground.setAttribute("height", height);
-  courtBackground.setAttribute("fill", courtColor);
-  svg.appendChild(courtBackground);
+    script.onerror = () => {
+      reject(new Error("Failed to load heatmap.js"));
+    };
 
-  // Garis sideline dan baseline
-  const outline = document.createElementNS(svgNS, "rect");
-  outline.setAttribute("x", 0);
-  outline.setAttribute("y", 0);
-  outline.setAttribute("width", width);
-  outline.setAttribute("height", height);
-  outline.setAttribute("stroke", lineColor);
-  outline.setAttribute("stroke-width", 2);
-  outline.setAttribute("fill", "none");
-  svg.appendChild(outline);
+    document.head.appendChild(script);
+  });
+};
 
-  // Garis tengah
-  const centerLine = document.createElementNS(svgNS, "line");
-  centerLine.setAttribute("x1", width / 2);
-  centerLine.setAttribute("y1", 0);
-  centerLine.setAttribute("x2", width / 2);
-  centerLine.setAttribute("y2", height);
-  centerLine.setAttribute("stroke", lineColor);
-  centerLine.setAttribute("stroke-width", 2);
-  svg.appendChild(centerLine);
+const onImageLoad = () => {
+  // Initialize or reinitialize the heatmap when the image loads
+  // console.log("Image loaded, initializing heatmap");
+  // Small delay to ensure image dimensions are fully set
+  setTimeout(initHeatmap, 100);
+};
 
-  // Lingkaran tengah (3.66m radius)
-  const centerCircle = document.createElementNS(svgNS, "circle");
-  centerCircle.setAttribute("cx", width / 2);
-  centerCircle.setAttribute("cy", height / 2);
-  centerCircle.setAttribute("r", 1.83 * scaleX);
-  centerCircle.setAttribute("stroke", lineColor);
-  centerCircle.setAttribute("stroke-width", 2);
-  centerCircle.setAttribute("fill", "none");
-  svg.appendChild(centerCircle);
+const initHeatmap = async () => {
+  if (!courtContainer.value || !courtImage.value) {
+    console.error("Required elements not found");
+    return;
+  }
 
-  // Three-point line kiri (garis horizontal 1.575m + lengkungan 6.75m radius)
-  const left3PointLine1 = document.createElementNS(svgNS, "line");
-  left3PointLine1.setAttribute("x1", 0);
-  left3PointLine1.setAttribute("y1", height / 2 - 6.75 * scaleY);
-  left3PointLine1.setAttribute("x2", 1.575 * scaleX);
-  left3PointLine1.setAttribute("y2", height / 2 - 6.75 * scaleY);
-  left3PointLine1.setAttribute("stroke", lineColor);
-  left3PointLine1.setAttribute("stroke-width", 2);
-  svg.appendChild(left3PointLine1);
+  // Clean up any existing instance
+  if (heatmapInstance && heatmapInstance._renderer) {
+    heatmapInstance = null;
+  }
 
-  const left3PointLine2 = document.createElementNS(svgNS, "line");
-  left3PointLine2.setAttribute("x1", 0);
-  left3PointLine2.setAttribute("y1", height / 2 + 6.75 * scaleY);
-  left3PointLine2.setAttribute("x2", 1.575 * scaleX);
-  left3PointLine2.setAttribute("y2", height / 2 + 6.75 * scaleY);
-  left3PointLine2.setAttribute("stroke", lineColor);
-  left3PointLine2.setAttribute("stroke-width", 2);
-  svg.appendChild(left3PointLine2);
+  try {
+    const imageRect = courtImage.value.getBoundingClientRect();
+    scaleX.value = imageRect.width / COURT_WIDTH;
+    scaleY.value = imageRect.height / COURT_HEIGHT;
+    // Load the heatmap library
+    const h337 = await loadHeatmapJs();
 
-  const left3PointArc = document.createElementNS(svgNS, "path");
-  left3PointArc.setAttribute(
-    "d",
-    `M ${1.575 * scaleX} ${height / 2 - 6.75 * scaleY} A ${6.75 * scaleX} ${
-      6.75 * scaleY
-    } 0 0 1 ${1.575 * scaleX} ${height / 2 + 6.75 * scaleY}`
-  );
-  left3PointArc.setAttribute("stroke", lineColor);
-  left3PointArc.setAttribute("stroke-width", 2);
-  left3PointArc.setAttribute("fill", "none");
-  svg.appendChild(left3PointArc);
+    // Create the heatmap instance
+    heatmapInstance = h337.create({
+      container: courtContainer.value,
+      radius: 50,
+      maxOpacity: 0.6,
+      minOpacity: 0.2,
+      blur: 0.85,
+    });
 
-  // Three-point line kanan
-  const right3PointLine1 = document.createElementNS(svgNS, "line");
-  right3PointLine1.setAttribute("x1", width);
-  right3PointLine1.setAttribute("y1", height / 2 - 6.75 * scaleY);
-  right3PointLine1.setAttribute("x2", width - 1.575 * scaleX);
-  right3PointLine1.setAttribute("y2", height / 2 - 6.75 * scaleY);
-  right3PointLine1.setAttribute("stroke", lineColor);
-  right3PointLine1.setAttribute("stroke-width", 2);
-  svg.appendChild(right3PointLine1);
+    // const generateRandomData = (count) => {
+    //   return Array.from({ length: count }, () => ({
+    //     x: Math.floor(Math.random() * 29), // 0 - 28
+    //     y: Math.floor(Math.random() * 16), // 0 - 15
+    //     value: Math.floor(Math.random() * 10) + 1, // 1 - 10
+    //   }));
+    // };
 
-  const right3PointLine2 = document.createElementNS(svgNS, "line");
-  right3PointLine2.setAttribute("x1", width);
-  right3PointLine2.setAttribute("y1", height / 2 + 6.75 * scaleY);
-  right3PointLine2.setAttribute("x2", width - 1.575 * scaleX);
-  right3PointLine2.setAttribute("y2", height / 2 + 6.75 * scaleY);
-  right3PointLine2.setAttribute("stroke", lineColor);
-  right3PointLine2.setAttribute("stroke-width", 2);
-  svg.appendChild(right3PointLine2);
+    // const dataPoints = {
+    //   max: 10,
+    //   data: generateRandomData(20000), // Sesuai jumlah data awal
+    // };
 
-  const right3PointArc = document.createElementNS(svgNS, "path");
-  right3PointArc.setAttribute(
-    "d",
-    `M ${width - 1.575 * scaleX} ${height / 2 - 6.75 * scaleY} A ${
-      6.75 * scaleX
-    } ${6.75 * scaleY} 0 0 0 ${width - 1.575 * scaleX} ${
-      height / 2 + 6.75 * scaleY
-    }`
-  );
-  right3PointArc.setAttribute("stroke", lineColor);
-  right3PointArc.setAttribute("stroke-width", 2);
-  right3PointArc.setAttribute("fill", "none");
-  svg.appendChild(right3PointArc);
+    const dataPoints = {
+      max: 10, // Nilai maksimal intensitas
+      data: [
+        { x: 12, y: 3, value: 8 },
+        { x: 25, y: 8, value: 7 },
+        { x: 18, y: 14, value: 6 },
+        { x: 9, y: 10, value: 8 },
+        { x: 7, y: 12, value: 4 },
+        { x: 21, y: 6, value: 5 },
+        { x: 26, y: 9, value: 4 },
+        { x: 14, y: 7, value: 5 },
+        { x: 3, y: 15, value: 3 },
+        { x: 20, y: 11, value: 4 },
+        { x: 5, y: 2, value: 3 },
+        { x: 17, y: 5, value: 2 },
+        { x: 28, y: 4, value: 5 },
+        { x: 22, y: 10, value: 5 },
+        { x: 16, y: 13, value: 4 },
+        { x: 11, y: 6, value: 3 },
+        { x: 8, y: 1, value: 5 },
+        { x: 27, y: 14, value: 6 },
+        { x: 19, y: 7, value: 7 },
+        { x: 6, y: 8, value: 6 },
+        { x: 2, y: 9, value: 5 },
+        { x: 23, y: 3, value: 4 },
+        { x: 13, y: 12, value: 5 },
+        { x: 10, y: 2, value: 7 },
+        { x: 24, y: 15, value: 6 },
+        { x: 1, y: 0, value: 5 },
+      ],
+    };
 
-  // Kotak kunci kiri (4.9m lebar, 5.8m tinggi)
-  const leftKey = document.createElementNS(svgNS, "rect");
-  leftKey.setAttribute("x", 0);
-  leftKey.setAttribute("y", height / 2 - 2.9 * scaleY);
-  leftKey.setAttribute("width", 4.9 * scaleX);
-  leftKey.setAttribute("height", 5.8 * scaleY);
-  leftKey.setAttribute("stroke", lineColor);
-  leftKey.setAttribute("stroke-width", 2);
-  leftKey.setAttribute("fill", "none");
-  svg.appendChild(leftKey);
+    const scaledDataPoints = {
+      max: dataPoints.max,
+      data: dataPoints.data.map((point) => ({
+        x: Math.round(point.x * scaleX.value),
+        y: Math.round(point.y * scaleY.value),
+        value: point.value, // Tidak berubah
+      })),
+    };
+    // console.log(scaledDataPoints.data);
 
-  // Kotak kunci kanan
-  const rightKey = document.createElementNS(svgNS, "rect");
-  rightKey.setAttribute("x", width - 4.9 * scaleX);
-  rightKey.setAttribute("y", height / 2 - 2.9 * scaleY);
-  rightKey.setAttribute("width", 4.9 * scaleX);
-  rightKey.setAttribute("height", 5.8 * scaleY);
-  rightKey.setAttribute("stroke", lineColor);
-  rightKey.setAttribute("stroke-width", 2);
-  rightKey.setAttribute("fill", "none");
-  svg.appendChild(rightKey);
+    heatmapInstance.setData(scaledDataPoints);
 
-  // Semi-circle di dalam kotak kunci kiri (1.575m radius)
-  const leftRestrictedAreaArc = document.createElementNS(svgNS, "path");
-  leftRestrictedAreaArc.setAttribute(
-    "d",
-    `M ${4.9 * scaleX} ${height / 2 - 1.575 * scaleY} A ${1.575 * scaleX} ${
-      1.575 * scaleY
-    } 0 0 1 ${4.9 * scaleX} ${height / 2 + 1.575 * scaleY}`
-  );
-  leftRestrictedAreaArc.setAttribute("stroke", lineColor);
-  leftRestrictedAreaArc.setAttribute("stroke-width", 2);
-  leftRestrictedAreaArc.setAttribute("fill", "none");
-  svg.appendChild(leftRestrictedAreaArc);
+    // console.log("Heatmap initialized successfully");
+  } catch (error) {
+    console.error("Error initializing heatmap:", error);
+  }
+};
 
-  // Semi-circle di dalam kotak kunci kanan
-  const rightRestrictedAreaArc = document.createElementNS(svgNS, "path");
-  rightRestrictedAreaArc.setAttribute(
-    "d",
-    `M ${width - 4.9 * scaleX} ${height / 2 - 1.575 * scaleY} A ${
-      1.575 * scaleX
-    } ${1.575 * scaleY} 0 0 0
-            ${width - 4.9 * scaleX} ${height / 2 + 1.575 * scaleY}`
-  );
-  rightRestrictedAreaArc.setAttribute("stroke", lineColor);
-  rightRestrictedAreaArc.setAttribute("stroke-width", 2);
-  rightRestrictedAreaArc.setAttribute("fill", "none");
-  svg.appendChild(rightRestrictedAreaArc);
-
-  // Ring basket kiri (0.45m radius)
-  const leftBasketCircle = document.createElementNS(svgNS, "circle");
-  leftBasketCircle.setAttribute("cx", 1.22 * scaleX + 0.45 * scaleX);
-  leftBasketCircle.setAttribute("cy", height / 2);
-  leftBasketCircle.setAttribute("r", 0.45 * scaleX);
-  leftBasketCircle.setAttribute("stroke", lineColor);
-  leftBasketCircle.setAttribute("stroke-width", 2);
-  leftBasketCircle.setAttribute("fill", "none");
-  svg.appendChild(leftBasketCircle);
-
-  const leftBasketLine = document.createElementNS(svgNS, "line");
-  leftBasketLine.setAttribute("x1", 1.22 * scaleX);
-  leftBasketLine.setAttribute("y1", height / 2 - 0.915 * scaleY);
-  leftBasketLine.setAttribute("x2", 1.22 * scaleX);
-  leftBasketLine.setAttribute("y2", height / 2 + 0.915 * scaleY);
-  leftBasketLine.setAttribute("stroke", lineColor);
-  leftBasketLine.setAttribute("stroke-width", 2);
-  svg.appendChild(leftBasketLine);
-
-  // Ring basket kanan (0.45m radius)
-  const rightBasketCircle = document.createElementNS(svgNS, "circle");
-  rightBasketCircle.setAttribute("cx", width - (1.22 * scaleX + 0.45 * scaleX));
-  rightBasketCircle.setAttribute("cy", height / 2);
-  rightBasketCircle.setAttribute("r", 0.45 * scaleX);
-  rightBasketCircle.setAttribute("stroke", lineColor);
-  rightBasketCircle.setAttribute("stroke-width", 2);
-  rightBasketCircle.setAttribute("fill", "none");
-  svg.appendChild(rightBasketCircle);
-
-  const rightBasketLine = document.createElementNS(svgNS, "line");
-  rightBasketLine.setAttribute("x1", width - 1.22 * scaleX);
-  rightBasketLine.setAttribute("y1", height / 2 - 0.915 * scaleY);
-  rightBasketLine.setAttribute("x2", width - 1.22 * scaleX);
-  rightBasketLine.setAttribute("y2", height / 2 + 0.915 * scaleY);
-  rightBasketLine.setAttribute("stroke", lineColor);
-  rightBasketLine.setAttribute("stroke-width", 2);
-  svg.appendChild(rightBasketLine);
-
-  document.getElementById("basketballCourt").innerHTML = "";
-  document.getElementById("basketballCourt").appendChild(svg);
-}
+const handleResize = () => {
+  // console.log("Window resized");
+  // Need to completely reinitialize on resize
+  setTimeout(initHeatmap, 200);
+};
 
 onMounted(() => {
-  drawBasketballCourt();
+  window.addEventListener("resize", handleResize);
+  // Initial setup
+  if (courtImage.value && courtImage.value.complete) {
+    onImageLoad();
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+  heatmapInstance = null;
 });
 </script>
+
+<style scoped></style>
