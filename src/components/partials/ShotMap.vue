@@ -61,9 +61,9 @@ const initShotmap = async () => {
       y: Math.round(shot.y * scaleY.value),
       value: shot.value,
     }));
-    console.log(scaledShots);
-    console.log(scaleY.value);
-    console.log(scaleX.value);
+    // console.log(scaledShots);
+    // console.log(scaleY.value);
+    // console.log(scaleX.value);
   } catch (error) {
     console.error("Error initializing shotmap:", error);
   }
