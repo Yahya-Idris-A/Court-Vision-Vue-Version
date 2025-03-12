@@ -13,13 +13,12 @@
       :key="index"
       class="shot w-[20px] h-[20px] text-[10px] max-xl:w-[10px] max-xl:h-[10px] max-xl:text-[8px] max-sm:w-[8px] max-sm:h-[8px] max-sm:text-[5px]"
       :style="{
-        left: `${shot.x}px`,
-        top: `${shot.y}px`,
+        left: `${shot.x - 10}px`,
+        top: `${shot.y - 10}px`,
       }"
     >
       {{ shot.value }}
     </div>
-    <div class="flex absolute top-[1053px] left-[988px]">1</div>
   </div>
 </template>
 
@@ -53,17 +52,23 @@ const updateCourtSize = () => {
 const initShotmap = async () => {
   try {
     const imageRect = courtRef.value.getBoundingClientRect();
-    scaleY.value = imageRect.width / COURT_WIDTH;
-    scaleX.value = imageRect.height / COURT_HEIGHT;
+    // Get actual dimensions
+    courtSize.value = {
+      width: imageRect.width,
+      height: imageRect.height,
+    };
+
+    // Calculate scale factors
+    scaleX.value = courtSize.value.width / COURT_WIDTH;
+    scaleY.value = courtSize.value.height / COURT_HEIGHT;
 
     scaledShots.value = shots.value.map((shot) => ({
-      x: Math.round(shot.x * scaleX.value), // Pastikan hasilnya integer
-      y: Math.round(shot.y * scaleY.value),
+      // Position from left
+      x: (shot.y / COURT_WIDTH) * courtSize.value.width,
+      // Position from top
+      y: (shot.x / COURT_HEIGHT) * courtSize.value.height,
       value: shot.value,
     }));
-    // console.log(scaledShots);
-    // console.log(scaleY.value);
-    // console.log(scaleX.value);
   } catch (error) {
     console.error("Error initializing shotmap:", error);
   }
