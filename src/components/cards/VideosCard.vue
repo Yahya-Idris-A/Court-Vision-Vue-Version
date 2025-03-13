@@ -33,11 +33,12 @@
         </div>
       </div>
       <div class="flex flex-row justify-start gap-[5px]">
-        <v-icon
+        <v-progress-circular
           v-if="uploadProgress != 100"
-          icon="mdi mdi-timer-sand"
-          class="!text-[22px] !text-[#FD6A2A] max-sm:!text-[20px]"
-        ></v-icon>
+          indeterminate
+          color="#FD6A2A"
+          size="22"
+        ></v-progress-circular>
         <v-icon
           v-if="uploadProgress == 100"
           icon="mdi mdi-check-circle"
@@ -47,7 +48,7 @@
           v-if="uploadProgress != 100"
           class="text-[15px] text-black font-normal"
         >
-          Analyzing...
+          {{ loadingText }}
         </p>
         <p
           v-if="uploadProgress == 100"
@@ -61,12 +62,34 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted, onUnmounted } from "vue";
+
+const loadingStep = ref(0);
+let loadingInterval = null;
 const props = defineProps({
   thumbnail: String,
   title: String,
   date: String,
   uploadProgress: Number,
   detailAnalysisUrl: String,
+});
+
+const loadingText = computed(() => {
+  const dots = ["", ".", "..", "..."];
+  return `Analyzing${dots[loadingStep.value]}`;
+});
+
+onMounted(() => {
+  loadingInterval = setInterval(() => {
+    loadingStep.value = (loadingStep.value + 1) % 4;
+  }, 500);
+});
+
+// Hentikan animasi jika komponen di-unmount
+onUnmounted(() => {
+  if (loadingInterval) {
+    clearInterval(loadingInterval);
+  }
 });
 </script>
 
