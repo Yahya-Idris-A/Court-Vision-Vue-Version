@@ -9,11 +9,7 @@
         {{ question }}
       </p>
       <v-icon
-        :icon="
-          isAnswerOpen
-            ? 'mdi mdi-minus-circle-outline'
-            : 'mdi mdi-plus-circle-outline'
-        "
+        :icon="isAnswerOpen ? 'mdi mdi-chevron-up' : 'mdi mdi-chevron-down'"
         class="!text-[40px] max-sm:!text-[24px] cursor-pointer"
         @click="onToggleQuestion"
       ></v-icon>
