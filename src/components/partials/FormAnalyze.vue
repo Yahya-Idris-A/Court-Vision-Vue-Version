@@ -3,6 +3,16 @@
     action=""
     class="flex flex-col gap-[32px] justify-start items-center w-full px-[30px] py-[20px]"
   >
+    <!-- Video Title -->
+    <div class="w-full">
+      <v-text-field
+        label="Match Title"
+        variant="outlined"
+        density="compact"
+        hide-details="auto"
+        required
+      ></v-text-field>
+    </div>
     <div class="flex flex-row gap-[24px] items-center w-full">
       <!-- Home Team -->
       <v-text-field
@@ -56,10 +66,10 @@
         </v-container>
       </v-dialog>
     </div>
-    <!-- Video Title -->
+    <!-- Match Venue -->
     <div class="w-full">
       <v-text-field
-        label="Match Title"
+        label="Match Venue"
         variant="outlined"
         density="compact"
         hide-details="auto"

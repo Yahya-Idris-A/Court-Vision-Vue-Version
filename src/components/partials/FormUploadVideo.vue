@@ -35,13 +35,11 @@
         <div class="mr-[10px]">
           <v-icon
             icon="mdi mdi-video-plus-outline"
-            class="!text-[40px] max-sm:!text-[30px]"
+            class="!text-[40px] max-sm:!text-[30px] !text-[#FD6A2A]"
           ></v-icon>
         </div>
         <span class="grow truncate">{{ selectedFile.name }}</span>
-        <span class="ml-[10px] font-[14px]">{{
-          formatFileSize(selectedFile.size)
-        }}</span>
+        <span class="ml-[10px] font-[14px]">{{ uploadProgress }}%</span>
       </div>
       <div
         class="overflow-hidden rounded-[10px] border-[1px] border-[#403D91] h-[10px]"
