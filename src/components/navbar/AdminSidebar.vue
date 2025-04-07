@@ -1,11 +1,15 @@
 <template>
   <div
     class="flex flex-col justify-start items-center bg-white stroke-[#667085] shadow gap-[8px] min-h-screen h-full"
-    :class="isMenuOpen ? 'w-[20%] max-sm:w-fit' : 'max-w-fit'"
+    :class="
+      isMenuOpen
+        ? 'w-[22%] max-lg:w-[45%] max-xl:w-[40%] max-sm:w-fit'
+        : 'max-w-fit'
+    "
   >
     <aside class="sticky top-0 z-50 h-screen w-full">
       <div class="flex flex-col h-full justify-between w-full">
-        <div class="flex flex-col">
+        <div class="flex flex-col justify-center items-center">
           <!-- Logo and Indent -->
           <div
             class="flex flex-row items-center w-full max-sm:w-fit px-[18px] max-sm:px-[10px]"
