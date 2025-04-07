@@ -30,16 +30,25 @@ const routes = [
     path: "/profile/analyze",
     name: "Analyze",
     component: Analyze,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/profile/my-analyze",
     name: "My Analyze",
     component: MyAnalyze,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/profile/detail-analyze",
     name: "Detail Analyze",
     component: DetailAnalyze,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -49,6 +58,16 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 };
   },
+});
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  if (to.meta.requiresAuth && !token) {
+    next({ name: "SignIn" }); // Redirect kalau belum login
+  } else {
+    next(); // Lanjutkan navigasi
+  }
 });
 
 export default router;

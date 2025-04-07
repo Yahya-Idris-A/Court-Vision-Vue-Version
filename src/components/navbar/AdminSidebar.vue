@@ -141,6 +141,7 @@
         >
           <div
             class="flex flex-row items-center w-full max-sm:w-fit px-[18px] max-sm:px-[10px] cursor-pointer rounded-[6px] bg-[#FD6A2A] py-[8px]"
+            @click="logout"
           >
             <v-icon
               icon="mdi mdi-logout"
@@ -161,6 +162,11 @@
 
 <script setup>
 import { ref } from "vue";
+
+const logout = () => {
+  localStorage.clear();
+  window.location.href = "/";
+};
 
 const isMenuOpen = ref(true);
 
