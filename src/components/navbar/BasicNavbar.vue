@@ -23,7 +23,7 @@
           <ul class="flex max-sm:flex-col items-center gap-[64px]">
             <li>
               <router-link
-                to="/"
+                to="/home"
                 class="hover:text-[#FD6A2A] text-[20px] font-semibold"
                 :class="
                   $route.name == 'Home' ? 'text-[#FD6A2A]' : 'text-[#667085]'
@@ -66,7 +66,7 @@
           </ul>
         </div>
         <!-- login button -->
-        <div class="">
+        <div v-if="!user">
           <router-link
             to="/sign-in"
             class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer"
@@ -76,6 +76,14 @@
               icon="mdi mdi-login"
               class="!text-[24px] max-sm:!text-[20px] !text-white"
             ></v-icon>
+          </router-link>
+        </div>
+        <div v-if="user">
+          <router-link
+            to="/profile/analyze"
+            class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer"
+          >
+            Dashboard
           </router-link>
         </div>
       </div>
@@ -88,7 +96,9 @@
   </header>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+
+const user = localStorage.getItem("token");
 
 const isMenuOpen = ref(false);
 

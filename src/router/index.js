@@ -13,6 +13,19 @@ import DetailAnalyze from "@views/Profile/DetailAnalyze.vue";
 const routes = [
   {
     path: "/",
+    name: "Root",
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      const auth = localStorage.getItem("token");
+      if (auth) {
+        next({ name: "Analyze" });
+      } else {
+        next({ name: "Home" }); // kalau belum login, arahkan ke landing page
+      }
+    },
+  },
+  {
+    path: "/home",
     name: "Home",
     component: Home,
   },

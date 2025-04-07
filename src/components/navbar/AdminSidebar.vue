@@ -57,7 +57,7 @@
             </div>
             <!-- Btn My Profile -->
             <router-link
-              to="/"
+              to="/home"
               class="flex flex-row justify-start items-center w-full max-sm:w-fit px-[16px] max-sm:px-[10px] rounded-[6px] py-[8px] cursor-pointer"
               :class="$route.name == 'My Profile' ? 'bg-[#FD6A2A]' : 'bg-white'"
             >
