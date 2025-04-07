@@ -6,6 +6,7 @@
           <!-- Username -->
           <v-text-field
             class="mb-[22px]"
+            v-model="userData.name"
             label="Username"
             variant="outlined"
             density="compact"
@@ -15,6 +16,7 @@
           <!-- Email -->
           <v-text-field
             class="mb-[22px]"
+            v-model="userData.email"
             label="Email"
             type="email"
             variant="outlined"
@@ -25,7 +27,7 @@
           <!-- Password -->
           <v-text-field
             class="mb-[22px]"
-            v-model="password"
+            v-model="userData.password"
             label="Password"
             :type="showPassword ? 'text' : 'password'"
             variant="outlined"
@@ -67,18 +69,19 @@
               >
             </template>
           </v-checkbox>
-          <button
-            class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold mt-[18px] cursor-pointer"
-          >
-            Sign Up
-          </button>
-          <p
-            class="text-[#4B465C] text-[15px] text-center leading-[20px] my-[32px]"
-          >
-            By clicking the Sign Up button you agree to our Term and Condition
-            and Privacy Policy
-          </p>
         </form>
+        <button
+          class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold cursor-pointer"
+          @click="submit"
+        >
+          Sign Up
+        </button>
+        <p
+          class="text-[#4B465C] text-[15px] text-center leading-[20px] my-[32px]"
+        >
+          By clicking the Sign Up button you agree to our Term and Condition and
+          Privacy Policy
+        </p>
       </template>
       <template #autChoice>
         <div class="flex flex-col w-full items-center mt-[32px]">
@@ -95,13 +98,20 @@
 </template>
 <script setup>
 import AuthenticationCard from "../../components/cards/AuthenticationCard.vue";
+import * as authService from "@/services/authService";
+import * as utils from "@/plugins/utils";
 
 import { ref } from "vue";
 
-const password = ref("");
 const confirmPassword = ref("");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
+const userData = ref({
+  name: "",
+  email: "",
+  password: "",
+});
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
@@ -109,6 +119,42 @@ const togglePassword = () => {
 
 const toggleConfirmPassword = () => {
   showConfirmPassword.value = !showConfirmPassword.value;
+};
+
+const submit = async () => {
+  if (validate()) {
+    const response = await authService.signup(userData.value);
+    console.log(response);
+    if (response.statusCode == 201) {
+      localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      utils.callToaster("success", "Sign Up Berhasil");
+
+      window.location.href = "/profile/analyze";
+    } else {
+      utils.callToaster("error", error.response.data.message);
+    }
+  }
+};
+
+const validate = () => {
+  if (userData.value.name == "") {
+    utils.callToaster("error", "Nama Tidak Boleh Kosong");
+    return false;
+  }
+  if (userData.value.email == "") {
+    utils.callToaster("error", "Email Tidak Boleh Kosong");
+    return false;
+  }
+  if (userData.value.password == "") {
+    utils.callToaster("error", "Password Tidak Boleh Kosong");
+    return false;
+  }
+  if (confirmPassword.value != userData.value.password) {
+    utils.callToaster("error", "Password Tidak Sesuai");
+    return false;
+  }
+  return true;
 };
 </script>
 <style scoped>

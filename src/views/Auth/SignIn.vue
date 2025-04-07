@@ -5,6 +5,7 @@
         <form class="flex flex-col justify-center w-full">
           <v-text-field
             class="mb-[22px]"
+            v-model="userData.email"
             label="Username or Email"
             type="email"
             variant="outlined"
@@ -13,7 +14,7 @@
             required
           ></v-text-field>
           <v-text-field
-            v-model="password"
+            v-model="userData.password"
             label="Password"
             :type="showPassword ? 'text' : 'password'"
             variant="outlined"
@@ -39,12 +40,13 @@
               >
             </template>
           </v-checkbox>
-          <button
-            class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold mt-[18px] cursor-pointer"
-          >
-            Sign In
-          </button>
         </form>
+        <button
+          class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold cursor-pointer"
+          @click="submit"
+        >
+          Sign In
+        </button>
       </template>
       <template #autChoice>
         <div class="flex flex-col w-full items-center mt-[32px]">
@@ -61,14 +63,54 @@
 </template>
 <script setup>
 import AuthenticationCard from "../../components/cards/AuthenticationCard.vue";
+import * as authService from "@/services/authService";
+import * as utils from "@/plugins/utils";
 
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 
-const password = ref("");
 const showPassword = ref(false);
+
+const userData = ref({
+  email: "",
+  password: "",
+});
 
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
+};
+
+const submit = async () => {
+  if (validate()) {
+    // onLoading.value = false;
+    try {
+      const response = await authService.signin(userData.value);
+      if (response.statusCode == 200) {
+        // localStorage.setItem("token", response.data.access_token);
+        // localStorage.setItem("user", JSON.stringify(response.data.user));
+        utils.callToaster("success", "Login Berhasil");
+        window.location.href = "/profile/analyze";
+      } else {
+        utils.callToaster("error", "Gagal Login");
+      }
+    } catch (error) {
+      console.log(error.response.data.message);
+      utils.callToaster("error", error.response.data.message);
+    }
+  }
+  console.log(userData.value);
+};
+
+const validate = () => {
+  if (userData.value.email == "") {
+    utils.callToaster("error", "Email cannot be empty");
+    return false;
+  }
+  if (userData.value.password == "") {
+    utils.callToaster("error", "Password cannot be empty");
+
+    return false;
+  }
+  return true;
 };
 </script>
 <style scoped>
