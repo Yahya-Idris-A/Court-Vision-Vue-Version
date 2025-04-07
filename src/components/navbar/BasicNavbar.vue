@@ -71,12 +71,11 @@
             to="/sign-in"
             class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer"
           >
-            Log In
-            <img
-              src="@assets/img/icon/LogInIcon.png"
-              class="size-[24px]"
-              alt=""
-            />
+            Sign In
+            <v-icon
+              icon="mdi mdi-login"
+              class="!text-[24px] max-sm:!text-[20px] !text-white"
+            ></v-icon>
           </router-link>
         </div>
       </div>
