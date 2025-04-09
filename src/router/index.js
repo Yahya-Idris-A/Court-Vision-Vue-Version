@@ -6,6 +6,7 @@ import {
 import Home from "@views/landing/Home.vue";
 import SignIn from "../views/Auth/SignIn.vue";
 import SignUp from "@views/Auth/SignUp.vue";
+import MyProfile from "@views/Profile/MyProfile.vue";
 import Analyze from "@views/Profile/Analyze.vue";
 import MyAnalyze from "@views/Profile/MyAnalyze.vue";
 import DetailAnalyze from "@views/Profile/DetailAnalyze.vue";
@@ -38,6 +39,14 @@ const routes = [
     path: "/sign-up",
     name: "SignUp",
     component: SignUp,
+  },
+  {
+    path: "/profile/dashboard",
+    name: "My Profile",
+    component: MyProfile,
+    // meta: {
+    //   requiresAuth: true,
+    // },
   },
   {
     path: "/profile/analyze",

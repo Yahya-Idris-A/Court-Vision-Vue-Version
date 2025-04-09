@@ -126,7 +126,7 @@ const submit = async () => {
     const response = await authService.signup(userData.value);
     console.log(response);
     if (response.statusCode == 201) {
-      localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       utils.callToaster("success", "Sign Up Berhasil");
 
