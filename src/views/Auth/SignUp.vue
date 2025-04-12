@@ -74,7 +74,14 @@
           class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold cursor-pointer"
           @click="submit"
         >
-          Sign Up
+          <span v-if="!isLoading">Sign Up</span>
+          <v-progress-circular
+            v-if="isLoading"
+            indeterminate
+            color="#FD6A2A"
+            size="22"
+            class="px-[27px]"
+          ></v-progress-circular>
         </button>
         <p
           class="text-[#4B465C] text-[15px] text-center leading-[20px] my-[32px]"
@@ -103,6 +110,7 @@ import * as utils from "@/plugins/utils";
 
 import { ref } from "vue";
 
+const isLoading = ref(false);
 const confirmPassword = ref("");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
@@ -123,16 +131,24 @@ const toggleConfirmPassword = () => {
 
 const submit = async () => {
   if (validate()) {
-    const response = await authService.signup(userData.value);
-    console.log(response);
-    if (response.statusCode == 201) {
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      utils.callToaster("success", "Sign Up Berhasil");
+    isLoading.value = true;
+    try {
+      const response = await authService.signup(userData.value);
+      console.log(response);
+      if (response.statusCode == 201) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        utils.callToaster("success", "Sign Up Berhasil");
 
-      window.location.href = "/profile/dashboard";
-    } else {
+        window.location.href = "/profile/dashboard";
+      } else {
+        utils.callToaster("error", error.response.data.message);
+      }
+    } catch (error) {
+      console.log(error.response.data.message);
       utils.callToaster("error", error.response.data.message);
+    } finally {
+      isLoading.value = false;
     }
   }
 };

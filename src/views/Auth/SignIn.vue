@@ -45,7 +45,14 @@
           class="bg-[#FD6A2A] px-[40%] py-[12px] rounded-[8px] text-white text-[16px] font-semibold cursor-pointer"
           @click="submit"
         >
-          Sign In
+          <span v-if="!isLoading">Sign In</span>
+          <v-progress-circular
+            v-if="isLoading"
+            indeterminate
+            color="#FD6A2A"
+            size="22"
+            class="px-[25px]"
+          ></v-progress-circular>
         </button>
       </template>
       <template #autChoice>
@@ -69,6 +76,7 @@ import * as utils from "@/plugins/utils";
 import { ref } from "vue";
 
 const showPassword = ref(false);
+const isLoading = ref(false);
 
 const userData = ref({
   email: "",
@@ -81,7 +89,7 @@ const togglePassword = () => {
 
 const submit = async () => {
   if (validate()) {
-    // onLoading.value = false;
+    isLoading.value = true;
     try {
       const response = await authService.signin(userData.value);
       if (response.statusCode == 200) {
@@ -95,9 +103,10 @@ const submit = async () => {
     } catch (error) {
       console.log(error.response.data.message);
       utils.callToaster("error", error.response.data.message);
+    } finally {
+      isLoading.value = false;
     }
   }
-  console.log(userData.value);
 };
 
 const validate = () => {
