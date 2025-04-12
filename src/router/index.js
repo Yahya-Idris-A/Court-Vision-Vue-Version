@@ -44,9 +44,9 @@ const routes = [
     path: "/profile/dashboard",
     name: "My Profile",
     component: MyProfile,
-    // meta: {
-    //   requiresAuth: true,
-    // },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/profile/analyze",

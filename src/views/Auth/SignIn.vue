@@ -88,7 +88,7 @@ const submit = async () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         utils.callToaster("success", "Login Berhasil");
-        window.location.href = "/profile/analyze";
+        window.location.href = "/profile/dashboard";
       } else {
         utils.callToaster("error", "Gagal Login");
       }

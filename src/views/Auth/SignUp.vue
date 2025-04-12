@@ -130,7 +130,7 @@ const submit = async () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       utils.callToaster("success", "Sign Up Berhasil");
 
-      window.location.href = "/profile/analyze";
+      window.location.href = "/profile/dashboard";
     } else {
       utils.callToaster("error", error.response.data.message);
     }

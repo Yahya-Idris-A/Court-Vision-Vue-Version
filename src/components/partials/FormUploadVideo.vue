@@ -54,7 +54,7 @@
     <!-- Analyze button -->
     <button
       class="analyze-button block w-full p-[12px] border-none rounded-[4px] bg-[#FD6A2A] text-[16px] font-medium text-white cursor-pointer"
-      :disabled="!selectedFile || isUploading"
+      :disabled="!uploadSucces"
       @click="startAnalysis"
     >
       {{ isUploading ? "Uploading..." : "Analyze" }}
@@ -64,8 +64,9 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import * as uploadService from "@/services/uploadService";
 import Uppy from "@uppy/core";
-import XHRUpload from "@uppy/xhr-upload";
+import AwsS3 from "@uppy/aws-s3";
 import Dashboard from "@uppy/dashboard";
 import DropTarget from "@uppy/drop-target";
 
@@ -79,9 +80,10 @@ const selectedFile = ref(null);
 const isDragging = ref(false);
 const uploadProgress = ref(0);
 const isUploading = ref(false);
+const uploadSucces = ref(false);
 const uppy = ref(null);
 
-// Initialize Uppy
+// Uppy Initialization
 onMounted(() => {
   uppy.value = new Uppy({
     id: "basketballUploader",
@@ -89,10 +91,11 @@ onMounted(() => {
     restrictions: {
       maxFileSize: 1000000000, // 1GB
       allowedFileTypes: [".mp4", ".mov", ".avi", ".mkv"],
+      maxNumberOfFiles: 1,
     },
   });
 
-  // Nambah Dashboard plugin tapi hidden
+  // Dashboard UI
   uppy.value.use(Dashboard, {
     inline: true,
     target: "#uppy-dashboard",
@@ -100,19 +103,83 @@ onMounted(() => {
     showProgressDetails: true,
   });
 
-  // Nambah XHR Upload plugin
-  uppy.value.use(XHRUpload, {
-    endpoint: "https://your-api-endpoint.com/upload",
-    formData: true,
-    fieldName: "video",
-  });
-
-  // Nambah drop target
+  // Dropzone support
   uppy.value.use(DropTarget, {
     target: document.querySelector(".drop-zone"),
   });
 
-  // Listen for file selection
+  // AWS S3
+  uppy.value.use(AwsS3, {
+    async getUploadParameters(file, options) {
+      const result = await uploadService.getSignedUrl(
+        file.name,
+        file.type,
+        options.signal
+      );
+      console.log(result);
+
+      const { method, url } = result.data;
+      return {
+        method,
+        url,
+        fields: {},
+        headers: {
+          "Content-Type": file.type,
+        },
+      };
+    },
+
+    async createMultipartUpload(file) {
+      const metadata = {};
+      Object.keys(file.meta || {}).forEach((key) => {
+        if (file.meta[key] != null) {
+          metadata[key] = file.meta[key].toString();
+        }
+      });
+
+      return await uploadService.createMultipartUpload(
+        file.name,
+        file.type,
+        metadata
+      );
+    },
+
+    async signPart(_file, options) {
+      return await uploadService.signPart(
+        options.uploadId,
+        options.key,
+        options.partNumber,
+        options.signal
+      );
+    },
+
+    async listParts(_file, options) {
+      return await uploadService.listParts(
+        options.uploadId,
+        options.key,
+        options.signal
+      );
+    },
+
+    async completeMultipartUpload(_file, options) {
+      return await uploadService.completeMultipartUpload(
+        options.uploadId,
+        options.key,
+        options.parts,
+        options.signal
+      );
+    },
+
+    async abortMultipartUpload(_file, options) {
+      return await uploadService.abortMultipartUpload(
+        options.uploadId,
+        options.key,
+        options.signal
+      );
+    },
+  });
+
+  // Uppy events
   uppy.value.on("file-added", (file) => {
     selectedFile.value = {
       id: file.id,
@@ -123,59 +190,42 @@ onMounted(() => {
     uploadProgress.value = 0;
   });
 
-  // Listen for upload progress
   uppy.value.on("upload-progress", (file, progress) => {
     if (selectedFile.value && selectedFile.value.id === file.id) {
-      const percent = Math.floor(
+      isUploading.value = true;
+      uploadProgress.value = Math.floor(
         (progress.bytesUploaded / progress.bytesTotal) * 100
       );
-      uploadProgress.value = percent;
     }
   });
 
-  // Listen for upload success
   uppy.value.on("upload-success", (file, response) => {
     isUploading.value = false;
+    uploadSucces.value = true;
     uploadProgress.value = 100;
-    console.log("Upload successful:", response);
+    console.log("Upload berhasil ke:", response.uploadURL);
   });
 
-  // Listen for upload error
   uppy.value.on("upload-error", (file, error) => {
     isUploading.value = false;
-    console.error("Upload error:", error);
+    console.error("Gagal upload:", error);
   });
 
-  // Listen for drag events
-  document.querySelector(".drop-zone").addEventListener("dragover", () => {
-    isDragging.value = true;
-  });
-
-  document.querySelector(".drop-zone").addEventListener("dragleave", () => {
-    isDragging.value = false;
-  });
-
-  document.querySelector(".drop-zone").addEventListener("drop", () => {
-    isDragging.value = false;
-  });
+  const dropZone = document.querySelector(".drop-zone");
+  if (dropZone) {
+    dropZone.addEventListener("dragover", () => (isDragging.value = true));
+    dropZone.addEventListener("dragleave", () => (isDragging.value = false));
+    dropZone.addEventListener("drop", () => (isDragging.value = false));
+  }
 });
-
-// Clean up Uppy when component is destroyed (masih error)
-// onBeforeUnmount(() => {
-//   if (uppy.value) {
-//     uppy.value.close();
-//   }
-// });
 
 function triggerFileInput() {
   fileInput.value.click();
 }
 
 function handleFileSelect(event) {
-  const files = event.target.files;
-  if (files.length > 0) {
-    const file = files[0];
-    // Add file to Uppy
+  const file = event.target.files[0];
+  if (file) {
     uppy.value.addFile({
       source: "file input",
       name: file.name,
@@ -186,14 +236,9 @@ function handleFileSelect(event) {
 }
 
 function startAnalysis() {
-  if (selectedFile.value) {
-    isUploading.value = true;
-    uppy.value.upload().then((result) => {
-      if (result.failed.length === 0) {
-        console.log("Analysis can start now!");
-        // You can redirect to analysis page or trigger analysis here
-      }
-    });
+  if (isUploading) {
+    isUploading.value = false;
+    window.location.href = "/profile/my-analyze";
   }
 }
 
@@ -204,6 +249,122 @@ function formatFileSize(bytes) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 }
+
+// // Initialize Uppy
+// onMounted(() => {
+//   uppy.value = new Uppy({
+//     id: "basketballUploader",
+//     autoProceed: true,
+//     restrictions: {
+//       maxFileSize: 1000000000, // 1GB
+//       allowedFileTypes: [".mp4", ".mov", ".avi", ".mkv"],
+//       maxNumberOfFiles: 1,
+//     },
+//   });
+
+//   // Nambah Dashboard plugin tapi hidden
+//   uppy.value.use(Dashboard, {
+//     inline: true,
+//     target: "#uppy-dashboard",
+//     hideUploadButton: true,
+//     showProgressDetails: true,
+//   });
+
+//   uppy.value.use(AwsS3, {
+//     // Endpoint dari server buat dapetin presigned URL
+//     companionUrl: uploadService.getEndpoint(),
+//   });
+
+//   // Nambah drop target
+//   uppy.value.use(DropTarget, {
+//     target: document.querySelector(".drop-zone"),
+//   });
+
+//   // Listen for file selection
+//   uppy.value.on("file-added", (file) => {
+//     selectedFile.value = {
+//       id: file.id,
+//       name: file.name,
+//       size: file.size,
+//       type: file.type,
+//     };
+//     uploadProgress.value = 0;
+//   });
+
+//   // Listen for upload progress
+//   uppy.value.on("upload-progress", (file, progress) => {
+//     if (selectedFile.value && selectedFile.value.id === file.id) {
+//       const percent = Math.floor(
+//         (progress.bytesUploaded / progress.bytesTotal) * 100
+//       );
+//       uploadProgress.value = percent;
+//     }
+//   });
+
+//   // Listen for upload success
+//   uppy.value.on("upload-success", (file, response) => {
+//     isUploading.value = false;
+//     uploadProgress.value = 100;
+//     console.log("Upload successful:", response);
+//   });
+
+//   // Listen for upload error
+//   uppy.value.on("upload-error", (file, error) => {
+//     isUploading.value = false;
+//     console.error("Upload error:", error);
+//   });
+
+//   // Listen for drag events
+//   document.querySelector(".drop-zone").addEventListener("dragover", () => {
+//     isDragging.value = true;
+//   });
+
+//   document.querySelector(".drop-zone").addEventListener("dragleave", () => {
+//     isDragging.value = false;
+//   });
+
+//   document.querySelector(".drop-zone").addEventListener("drop", () => {
+//     isDragging.value = false;
+//   });
+// });
+
+// function triggerFileInput() {
+//   fileInput.value.click();
+// }
+
+// function handleFileSelect(event) {
+//   const files = event.target.files;
+//   if (files.length > 0) {
+//     const file = files[0];
+//     // Add file to Uppy
+//     uppy.value.addFile({
+//       source: "file input",
+//       name: file.name,
+//       type: file.type,
+//       data: file,
+//     });
+//   }
+// }
+
+// function startAnalysis() {
+//   if (selectedFile.value) {
+//     isUploading.value = true;
+//     uppy.value.upload().then((result) => {
+//       if (result.failed.length === 0) {
+//         console.log("Analysis can start now!");
+//         // You can redirect to analysis page or trigger analysis here
+//       }
+//     });
+//   }
+// }
+
+// function formatFileSize(bytes) {
+//   if (!bytes || bytes === 0) return "0 Bytes";
+//   const k = 1024;
+//   const sizes = ["Bytes", "KB", "MB", "GB"];
+//   const i = Math.floor(Math.log(bytes) / Math.log(k));
+//   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+// }
 </script>
 
 <style scoped>

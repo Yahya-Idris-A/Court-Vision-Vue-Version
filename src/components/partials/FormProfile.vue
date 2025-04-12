@@ -50,6 +50,7 @@
       <div class="w-full">
         <v-text-field
           label="Username"
+          v-model="userName"
           variant="outlined"
           density="compact"
           hide-details="auto"
@@ -65,6 +66,7 @@
       <div class="w-full">
         <v-text-field
           label="Email"
+          v-model="userEmail"
           variant="outlined"
           type="email"
           density="compact"
@@ -145,7 +147,8 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
+import * as authService from "@/services/authService";
 import * as utils from "@/plugins/utils";
 import image from "@assets/img/user/Avatar.png";
 import Uppy from "@uppy/core";
@@ -298,5 +301,26 @@ const saveDate = (newDate) => {
   date.value = newDate; // Simpan tanggal yang dipilih
   menu.value = false; // Tutup modal
 };
+
+// Hit API
+const userData = ref({});
+const userName = ref("");
+const userEmail = ref("");
+
+const getUserData = async () => {
+  const response = await authService.getUser();
+  userData.value = response.data;
+  userName.value = response.data.user.name;
+  userEmail.value = response.data.user.email;
+  console.log(userName.value);
+};
+
+watchEffect(async () => {
+  await getUserData();
+});
+
+onMounted(async () => {
+  await getUserData();
+});
 </script>
 <style scoped></style>
