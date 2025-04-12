@@ -18,11 +18,11 @@
           <div class="flex flex-row gap-[12px] md:gap-[24px]">
             <v-icon
               icon="mdi mdi-instagram"
-              class="!text-[24px] text-white"
+              class="!text-[24px] text-white cursor-pointer"
             ></v-icon>
             <v-icon
               icon="mdi mdi-twitter"
-              class="!text-[24px] text-white"
+              class="!text-[24px] text-white cursor-pointer"
             ></v-icon>
           </div>
         </div>

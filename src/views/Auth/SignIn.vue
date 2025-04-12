@@ -6,7 +6,7 @@
           <v-text-field
             class="mb-[22px]"
             v-model="userData.email"
-            label="Username or Email"
+            label="Email"
             type="email"
             variant="outlined"
             density="compact"
