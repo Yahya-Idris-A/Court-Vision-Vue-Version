@@ -91,23 +91,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize);
 });
-
-// // Hitung koordinat pemain yang sudah disesuaikan dengan ukuran website
-// const adjustedShots = computed(() => {
-//   const scaleX = courtSize.value.width / COURT_WIDTH;
-//   const scaleY = courtSize.value.height / COURT_HEIGHT;
-
-//   return shots.value.map((shot) => ({
-//     x: Math.round(shot.x * scaleX.value),
-//     y: Math.round(shot.y * scaleY.value),
-//     value: shot.value,
-//   }));
-// });
-
-// onMounted(async () => {
-//   await nextTick(); // Tunggu sampai DOM selesai diperbarui
-//   updateCourtSize();
-// });
 </script>
 
 <style scoped>

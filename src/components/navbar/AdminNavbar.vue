@@ -3,7 +3,7 @@
     class="flex flex-row items-center justify-end max-sm:justify-center bg-white stroke-[#667085] shadow gap-[8px] w-full rounded-[6px]"
   >
     <img
-      src="@assets/img/user/Avatar.png"
+      :src="userData.user?.photo_url || defaultImage"
       alt=""
       class="size-[50px] my-[6px]"
     />
@@ -17,6 +17,7 @@
 
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
+import defaultImage from "@assets/img/user/user.svg";
 import * as authService from "@/services/authService";
 
 const userData = ref({});

@@ -19,7 +19,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const auth = localStorage.getItem("token");
       if (auth) {
-        next({ name: "Analyze" });
+        next({ name: "My Profile" });
       } else {
         next({ name: "Home" }); // kalau belum login, arahkan ke landing page
       }

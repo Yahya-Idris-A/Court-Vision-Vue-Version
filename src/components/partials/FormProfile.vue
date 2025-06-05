@@ -44,6 +44,28 @@
     <!-- Hidden Uppy Dashboard (used for file picking but not displayed) -->
     <div id="uppy-dashboard" style="display: none"></div>
 
+    <!-- File progress display -->
+    <div v-if="selectedFile" class="px-[8px] py-[12px] mb-[15px] w-full">
+      <div class="flex flex-row items-center mb-[6px]">
+        <div class="mr-[10px]">
+          <v-icon
+            icon="mdi mdi-image-plus-outline"
+            class="!text-[40px] max-sm:!text-[30px] !text-[#FD6A2A]"
+          ></v-icon>
+        </div>
+        <span class="grow truncate">{{ selectedFile.name }}</span>
+        <span class="ml-[10px] font-[14px]">{{ uploadProgress }}%</span>
+      </div>
+      <div
+        class="overflow-hidden rounded-[10px] border-[1px] border-[#403D91] h-[10px]"
+      >
+        <div
+          class="progress-fill"
+          :style="{ width: `${uploadProgress}%` }"
+        ></div>
+      </div>
+    </div>
+
     <!-- Form -->
     <div class="flex flex-col items-center mt-[40px] gap-[40px] w-full">
       <!-- Username -->
@@ -79,59 +101,6 @@
             ></v-icon> </template
         ></v-text-field>
       </div>
-      <div class="flex flex-row items-center w-full gap-[32px] justify-between">
-        <!-- Phone Number -->
-        <div class="w-full">
-          <v-text-field
-            label="Phone Number"
-            variant="outlined"
-            type=""
-            density="compact"
-            hide-details="auto"
-            required
-            ><template #prepend-inner>
-              <v-icon
-                style="color: #667085 !important; font-size: 20px !important"
-                icon="mdi mdi-phone-outline"
-              ></v-icon> </template
-          ></v-text-field>
-        </div>
-        <!-- Date Picker -->
-        <div class="w-full">
-          <v-text-field
-            v-model="formattedDate"
-            label="Date of Birth"
-            variant="outlined"
-            density="compact"
-            hide-details="auto"
-            required
-            readonly
-            @click="menu = true"
-            class="custom-icon"
-            ><template #prepend-inner>
-              <v-icon
-                style="color: #667085 !important; font-size: 20px !important"
-                icon="mdi mdi-calendar-blank-outline"
-              ></v-icon> </template
-          ></v-text-field>
-          <v-dialog
-            v-model="menu"
-            max-width="400px"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-          >
-            <v-container>
-              <v-row justify="space-around">
-                <v-date-picker
-                  color="primary"
-                  @update:modelValue="saveDate"
-                ></v-date-picker>
-              </v-row>
-            </v-container>
-          </v-dialog>
-        </div>
-      </div>
     </div>
     <!-- Button Save-->
     <div
@@ -149,11 +118,11 @@
 <script setup>
 import { ref, computed, onMounted, watchEffect } from "vue";
 import * as authService from "@/services/authService";
+import * as uploadService from "@/services/uploadService";
 import * as utils from "@/plugins/utils";
-import image from "@assets/img/user/Avatar.png";
+import image from "@assets/img/user/user.svg";
 import Uppy from "@uppy/core";
-import XHRUpload from "@uppy/xhr-upload";
-import Dashboard from "@uppy/dashboard";
+import AwsS3 from "@uppy/aws-s3";
 import DropTarget from "@uppy/drop-target";
 // Import required CSS
 import "@uppy/core/dist/style.css";
@@ -162,78 +131,90 @@ import "@uppy/dashboard/dist/style.css";
 const imageInput = ref(null);
 const selectedImage = ref(image);
 const selectedImageName = ref();
-const isDragging = ref(false);
 const uppy = ref(null);
+const photo_url = ref("");
+const selectedFile = ref(null);
+const isDragging = ref(false);
+const uploadProgress = ref(0);
+const isUploading = ref(false);
+const uploadSucces = ref(false);
 
 // Initialize Uppy
 onMounted(() => {
   uppy.value = new Uppy({
-    autoProceed: false,
+    autoProceed: true,
     restrictions: {
-      maxFileSize: 5000000,
-      allowedFileTypes: [".svg", ".png", ".jpg", ".jpeg", ".webp"],
+      maxFileSize: 10000000, // 10MB
+      allowedFileTypes: [".jpg", ".jpeg", ".png", ".svg"],
+      maxNumberOfFiles: 1,
     },
   });
 
-  // Nambah Dashboard plugin tapi hidden
-  uppy.value.use(Dashboard, {
-    inline: true,
-    target: "#uppy-dashboard",
-    hideUploadButton: true,
-    showProgressDetails: false,
-  });
-
-  // Nambah XHR Upload plugin
-  uppy.value.use(XHRUpload, {
-    endpoint: "https://your-api-endpoint.com/upload",
-    formData: true,
-    fieldName: "image",
-  });
-
-  // Nambah drop target
+  // Dropzone support
   uppy.value.use(DropTarget, {
     target: document.querySelector(".drop-zone"),
   });
 
+  uppy.value.use(AwsS3, {
+    shouldUseMultipart: false,
+    async getUploadParameters(file, options) {
+      const result = await uploadService.getSignedUrl(
+        file.name,
+        file.type,
+        options.signal
+      );
+
+      console.log(options);
+      const { method, url } = result.data;
+      return {
+        method,
+        url,
+        fields: {},
+        headers: {
+          "Content-Type": file.type,
+        },
+      };
+    },
+  });
+
+  // Uppy events
   uppy.value.on("file-added", (file) => {
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/jpg",
-      "image/svg+xml",
-      "image/webp",
-    ];
-    if (allowedTypes.includes(file.type)) {
-      selectedImage.value = URL.createObjectURL(file.data);
-      selectedImageName.value = file.name;
-    } else {
-      utils.callToaster("error", "File type not supported");
-      uppy.value.removeFile(file.id);
+    selectedImage.value = URL.createObjectURL(file.data);
+    selectedFile.value = {
+      id: file.id,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    };
+    uploadProgress.value = 0;
+  });
+
+  uppy.value.on("upload-progress", (file, progress) => {
+    if (selectedFile.value && selectedFile.value.id === file.id) {
+      isUploading.value = true;
+      uploadProgress.value = Math.floor(
+        (progress.bytesUploaded / progress.bytesTotal) * 100
+      );
+      console.log("Upload Progress: ", uploadProgress.value);
     }
   });
 
-  // Listen for upload success
   uppy.value.on("upload-success", (file, response) => {
-    console.log("Upload successful:", response);
-  });
-
-  // Listen for upload error
-  uppy.value.on("upload-error", (file, error) => {
-    console.error("Upload error:", error);
+    isUploading.value = false;
+    uploadSucces.value = true;
+    uploadProgress.value = 100;
+    photo_url.value = response.uploadURL || "";
+    userData.value.photo_url = response.uploadURL || "";
+    console.log("Sukses Upload");
   });
 
   // Listen for drag events
-  document.querySelector(".drop-zone").addEventListener("dragover", () => {
-    isDragging.value = true;
-  });
-
-  document.querySelector(".drop-zone").addEventListener("dragleave", () => {
-    isDragging.value = false;
-  });
-
-  document.querySelector(".drop-zone").addEventListener("drop", () => {
-    isDragging.value = false;
-  });
+  const dropZone = document.querySelector(".drop-zone");
+  if (dropZone) {
+    dropZone.addEventListener("dragover", () => (isDragging.value = true));
+    dropZone.addEventListener("dragleave", () => (isDragging.value = false));
+    dropZone.addEventListener("drop", () => (isDragging.value = false));
+  }
 });
 
 function triggerImageInput() {
@@ -242,6 +223,7 @@ function triggerImageInput() {
 
 function handleImageSelect(event) {
   const files = event.target.files;
+
   if (files.length > 0) {
     const file = files[0];
     if (file) {
@@ -255,18 +237,14 @@ function handleImageSelect(event) {
       if (allowedTypes.includes(file.type)) {
         selectedImage.value = URL.createObjectURL(file);
         selectedImageName.value = file.name;
-        if (uppy.value) {
-          // Hapus semua file yang sudah ada
-          const existingFiles = uppy.value.getFiles();
-          existingFiles.forEach((f) => uppy.value.removeFile(f.id));
-
-          // Tambahkan file baru ke Uppy
-          uppy.value.addFile({
-            source: "manual-input",
+        try {
+          uppy.value?.addFile({
             name: file.name,
             type: file.type,
             data: file,
           });
+        } catch (error) {
+          console.error("Error saat addFile ke Uppy:", error);
         }
       } else {
         utils.callToaster("error", "File type not supported");
@@ -278,41 +256,37 @@ function handleImageSelect(event) {
 
 async function handleSave() {
   try {
-    const result = await uppy.value.upload();
-    if (result.failed.length === 0) {
-      utils.callToaster("success", "Saved Successfully");
-      // Lakukan logic lanjutan, misalnya simpan data user atau redirect
+    const response = await authService.updateUser(userData.value);
+    console.log(response);
+
+    if (response.statusCode == 200) {
+      utils.callToaster("success", "Edit Profile Berhasil");
+      getUserData();
     } else {
-      utils.callToaster("error", "Failed to Save");
+      utils.callToaster("error", response.message);
     }
-  } catch (err) {
-    utils.callToaster("error", "Failed to Save");
+  } catch (error) {
+    utils.callToaster("error", error.response.data.message);
   }
 }
 
-const date = ref(""); // Untuk nyimpan tanggal dalam format yang ditampilkan
-const menu = ref(false); // Mengontrol tampilan modal date picker
-const formattedDate = computed(() => {
-  return date.value ? new Date(date.value).toLocaleDateString("id-ID") : "";
-});
-
-// Fungsi nyimpan tanggal dan menutup modal
-const saveDate = (newDate) => {
-  date.value = newDate; // Simpan tanggal yang dipilih
-  menu.value = false; // Tutup modal
-};
-
 // Hit API
-const userData = ref({});
+const userData = ref({
+  name: "",
+  email: "",
+  photo_url: "",
+});
 const userName = ref("");
 const userEmail = ref("");
 
 const getUserData = async () => {
   const response = await authService.getUser();
-  userData.value = response.data;
+  userData.value.name = response.data.user.name;
+  userData.value.email = response.data.user.email;
+  userData.value.photo_url = response.data.user.photoUrl;
   userName.value = response.data.user.name;
   userEmail.value = response.data.user.email;
-  console.log(userName.value);
+  selectedImage.value = response.data.user.photo_url || image;
 };
 
 watchEffect(async () => {
@@ -323,4 +297,10 @@ onMounted(async () => {
   await getUserData();
 });
 </script>
-<style scoped></style>
+<style scoped>
+.progress-fill {
+  height: 100%;
+  background-color: #403d91;
+  transition: width 0.3s ease;
+}
+</style>

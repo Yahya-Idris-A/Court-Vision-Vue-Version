@@ -53,7 +53,7 @@
       <div v-if="!user" class="max-sm:w-full">
         <router-link
           to="/sign-in"
-          class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer max-sm:h-auto max-sm:w-full max-sm:justify-center"
+          class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer max-sm:h-auto max-sm:w-full max-sm:justify-center whitespace-nowrap"
         >
           Sign In
           <v-icon
@@ -64,7 +64,7 @@
       </div>
       <div v-if="user" class="max-sm:w-full">
         <router-link
-          to="/profile/analyze"
+          to="/profile/dashboard"
           class="bg-[#FD6A2A] text-white px-4.5 py-2.5 rounded-[8px] flex gap-[8px] text-[20px] font-semibold items-center cursor-pointer max-sm:h-auto max-sm:w-full max-sm:justify-center"
         >
           Dashboard
@@ -74,8 +74,6 @@
   </nav>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
-
 const user = localStorage.getItem("token");
 </script>
 <style scoped>

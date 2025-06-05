@@ -1,12 +1,12 @@
 <template>
-  <div class="mx-[100px] max-sm:mx-[20px]">
+  <div class="w-full !h-[100dvh]">
     <!-- Hero Section -->
     <div
-      class="relative h-[500px] flex flex-col justify-center items-center text-center mt-[32px]"
+      class="relative !h-[100dvh] flex flex-col justify-center items-center text-center"
     >
       <!-- Carousel -->
       <div
-        class="absolute inset-0 w-full h-full overflow-hidden"
+        class="absolute inset-0 w-full !h-[100dvh] overflow-hidden"
         v-if="isLoaded"
       >
         <v-carousel
@@ -14,13 +14,14 @@
           interval="4000"
           hide-delimiter-background
           :show-arrows="false"
-          class="w-full h-full rounded-[15px]"
+          class="w-full !h-[100dvh]"
         >
           <v-carousel-item
             v-for="(item, i) in items"
             :key="i"
             :src="item.src"
             cover
+            class="!h-[100dvh]"
           ></v-carousel-item>
         </v-carousel>
       </div>
@@ -42,6 +43,8 @@
         </h5>
       </div>
     </div>
+  </div>
+  <div class="mx-[100px] max-sm:mx-[20px]">
     <!-- Feature Section -->
     <h1
       class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
@@ -139,7 +142,7 @@
         answer="Basketball is a team sport in which two teams, most commonly of five players each, opposing one another on a rectangular court, compete with the primary objective of shooting a basketball through the defender's hoop, while preventing the opposing team from shooting through their own hoop."
       />
     </div>
-    <!-- Pricing Section -->
+    <!-- Pricing Section
     <h1
       class="text-black text-[48px] font-semibold text-center my-[32px] max-sm:my-[8px] max-sm:text-[24px]"
     >
@@ -169,7 +172,7 @@
         bill-method="Billed every month"
         :benefit="basicBenefit"
       />
-    </div>
+    </div> -->
   </div>
   <br /><br /><br />
 </template>

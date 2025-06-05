@@ -19,12 +19,14 @@
                 : 'justify-center'
             "
           >
-            <img
-              src="@assets/img/company Logo/Logo.png"
-              alt=""
-              class="size-[60px] max-sm:size-[30px] max-sm:mt-[10px]"
-              :class="isMenuOpen ? '' : 'hidden'"
-            />
+            <router-link to="/home" class="h-full flex items-center mr-auto">
+              <img
+                src="@assets/img/company Logo/Logo.png"
+                alt=""
+                class="size-[60px] max-sm:size-[30px] max-sm:mt-[10px]"
+                :class="isMenuOpen ? '' : 'hidden'"
+              />
+            </router-link>
             <v-icon
               :icon="
                 isMenuOpen

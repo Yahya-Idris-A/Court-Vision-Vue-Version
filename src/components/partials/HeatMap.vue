@@ -165,7 +165,7 @@ const initHeatmap = async () => {
       data: [{ x: 2137, y: 1138, value: 10 }],
     };
 
-    getHeatmapData([]);
+    getHeatmapData([1]);
 
     const scaledDataPoints = {
       max: finalDataCoordinates.value.max,
