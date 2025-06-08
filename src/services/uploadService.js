@@ -73,3 +73,12 @@ export const abortMultipartUpload = async (uploadId, key, signal) => {
     }
   );
 };
+
+export const uploadAllData = async (title, date, venue, video_url) => {
+  return axiosIns.post("/api/videos", {
+    title,
+    date,
+    venue,
+    video_url,
+  });
+};

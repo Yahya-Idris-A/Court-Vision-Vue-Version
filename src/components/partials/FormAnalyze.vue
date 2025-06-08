@@ -7,6 +7,7 @@
     <div class="w-full">
       <v-text-field
         label="Match Title"
+        v-model="title"
         variant="outlined"
         density="compact"
         hide-details="auto"
@@ -14,70 +15,55 @@
       ></v-text-field>
     </div>
     <div class="flex flex-row gap-[24px] items-center w-full">
-      <!-- Home Team -->
-      <v-text-field
-        label="Home Team"
-        variant="outlined"
-        density="compact"
-        hide-details="auto"
-        required
-      ></v-text-field>
-      <!-- Away Team -->
-      <v-text-field
-        label="Away Team"
-        variant="outlined"
-        density="compact"
-        hide-details="auto"
-        required
-      ></v-text-field>
-    </div>
-    <!-- Date Picker -->
-    <div class="w-full">
-      <v-text-field
-        v-model="formattedDate"
-        label="Match Date"
-        variant="outlined"
-        density="compact"
-        hide-details="auto"
-        required
-        readonly
-        @click="menu = true"
-        class="custom-icon"
-        ><template #prepend-inner>
-          <v-icon
-            style="color: #667085 !important; font-size: 20px !important"
-            icon="mdi mdi-calendar-blank-outline"
-          ></v-icon> </template
-      ></v-text-field>
-      <v-dialog
-        v-model="menu"
-        max-width="400px"
-        :close-on-content-click="false"
-        transition="scale-transition"
-        offset-y
-      >
-        <v-container>
-          <v-row justify="space-around">
-            <v-date-picker
-              color="primary"
-              @update:modelValue="saveDate"
-            ></v-date-picker>
-          </v-row>
-        </v-container>
-      </v-dialog>
-    </div>
-    <!-- Match Venue -->
-    <div class="w-full">
-      <v-text-field
-        label="Match Venue"
-        variant="outlined"
-        density="compact"
-        hide-details="auto"
-        required
-      ></v-text-field>
+      <!-- Date Picker -->
+      <div class="w-full">
+        <v-text-field
+          v-model="formattedDate"
+          label="Match Date"
+          variant="outlined"
+          density="compact"
+          hide-details="auto"
+          required
+          readonly
+          @click="menu = true"
+          class="custom-icon"
+          ><template #prepend-inner>
+            <v-icon
+              style="color: #667085 !important; font-size: 20px !important"
+              icon="mdi mdi-calendar-blank-outline"
+            ></v-icon> </template
+        ></v-text-field>
+        <v-dialog
+          v-model="menu"
+          max-width="400px"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+        >
+          <v-container>
+            <v-row justify="space-around">
+              <v-date-picker
+                color="primary"
+                @update:modelValue="saveDate"
+              ></v-date-picker>
+            </v-row>
+          </v-container>
+        </v-dialog>
+      </div>
+      <!-- Match Venue -->
+      <div class="w-full">
+        <v-text-field
+          label="Match Venue"
+          v-model="venue"
+          variant="outlined"
+          density="compact"
+          hide-details="auto"
+          required
+        ></v-text-field>
+      </div>
     </div>
     <div class="flex flex-col w-full gap-[10px]">
-      <UploadVideo />
+      <UploadVideo :title="title" :date="formattedDate" :venue="venue" />
     </div>
   </form>
 </template>
@@ -87,10 +73,24 @@ import UploadVideo from "@components/partials/FormUploadVideo.vue";
 
 import { ref, computed } from "vue";
 
+const title = ref("");
 const date = ref(""); // Untuk nyimpan tanggal dalam format yang ditampilkan
+const venue = ref("");
 const menu = ref(false); // Mengontrol tampilan modal date picker
 const formattedDate = computed(() => {
-  return date.value ? new Date(date.value).toLocaleDateString("id-ID") : "";
+  if (!date.value) return "";
+
+  const localDate = new Date(date.value);
+
+  const year = localDate.getFullYear();
+
+  // getMonth() dimulai dari 0 (Januari=0), jadi kita perlu +1
+  const month = (localDate.getMonth() + 1).toString().padStart(2, "0");
+
+  // getDate() mengembalikan hari dalam bulan (1-31)
+  const day = localDate.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 });
 
 // Fungsi nyimpan tanggal dan menutup modal

@@ -5,7 +5,7 @@
     <img
       :src="userData.user?.photo_url || defaultImage"
       alt=""
-      class="size-[50px] my-[6px]"
+      class="size-[50px] my-[6px] rounded-full object-cover"
     />
     <p
       class="text-[15px] text-[#4B465C] font-normal ml-[8px] mr-[32px] max-sm:mr-0"

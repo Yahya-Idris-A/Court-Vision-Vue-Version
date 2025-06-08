@@ -55,7 +55,7 @@
     <button
       class="analyze-button block w-full p-[12px] border-none rounded-[4px] bg-[#FD6A2A] text-[16px] font-medium text-white cursor-pointer"
       :disabled="!uploadSucces"
-      @click="startAnalysis"
+      @click.prevent="startAnalysis"
     >
       {{ isUploading ? "Uploading..." : "Analyze" }}
     </button>
@@ -74,6 +74,21 @@ import DropTarget from "@uppy/drop-target";
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  venue: {
+    type: String,
+    required: true,
+  },
+});
+
 // State variables
 const fileInput = ref(null);
 const selectedFile = ref(null);
@@ -81,6 +96,7 @@ const isDragging = ref(false);
 const uploadProgress = ref(0);
 const isUploading = ref(false);
 const uploadSucces = ref(false);
+const video_url = ref("");
 const uppy = ref(null);
 
 // Uppy Initialization
@@ -209,7 +225,8 @@ onMounted(() => {
     isUploading.value = false;
     uploadSucces.value = true;
     uploadProgress.value = 100;
-    console.log("Upload berhasil ke:", response.uploadURL);
+    video_url.value = response.uploadURL;
+    console.log("Upload berhasil ke:", video_url.value);
   });
 
   // uppy.value.on("upload-error", (file, error) => {
@@ -245,9 +262,22 @@ function handleFileSelect(event) {
 }
 
 function startAnalysis() {
-  if (isUploading) {
-    isUploading.value = false;
-    window.location.href = "/profile/my-analyze";
+  if (uploadSucces) {
+    console.log("Title: ", props.title);
+    console.log("Date: ", props.date);
+    console.log("Venue: ", props.venue);
+    try {
+      uploadService.uploadAllData(
+        props.title,
+        props.date,
+        props.venue,
+        video_url.value
+      );
+      console.log("Sukses");
+    } catch (error) {
+      console.log("Gagal upload");
+      console.error(error);
+    }
   }
 }
 </script>
