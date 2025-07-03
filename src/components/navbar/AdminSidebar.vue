@@ -34,6 +34,7 @@
                   : 'mdi mdi-format-indent-increase'
               "
               class="!text-[30px] !p-[30px] max-sm:!hidden !text-[#4B465C] cursor-pointer"
+              aria-label="Toggle Menu"
               @click="onToggleMenu"
             ></v-icon>
           </div>

@@ -1,5 +1,7 @@
 import axios from "@/plugins/axios";
 
+const baseURL = import.meta.env.VITE_APP_ROOT_API;
+
 axios.defaults.headers.common["Authorization"] =
   `Bearer ` + localStorage.getItem("token")?.replace(/['"]+/g, "");
 
@@ -13,3 +15,9 @@ export const getAllVideos = async () => {
     return null;
   }
 };
+
+export const getToken = () => {
+  return localStorage.getItem("token")?.replace(/['"]+/g, "");
+};
+
+export const endPointUploadProgress = baseURL + "/api/videos/progress";

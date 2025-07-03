@@ -12,20 +12,7 @@
     <div class="flex flex-col items-center justify-start w-full">
       <VideosCard
         v-for="item in videos"
-        :key="item.id"
         :thumbnail="item.thumbnail"
-        :title="item.title"
-        :date="item.date"
-        :uploadProgress="item.uploadProgress"
-        :uploadStatus="item.uploadStatus"
-        :detailAnalysisUrl="item.detailAnalysisUrl"
-      />
-    </div>
-    <!-- List of Videos -->
-    <div class="flex flex-col items-center justify-start w-full">
-      <VideosCard
-        v-for="item in currentData"
-        :thumbnail="thumbnail"
         :title="item.title"
         :date="item.date"
         :uploadProgress="item.uploadProgress"
@@ -33,169 +20,23 @@
         detailAnalysisUrl="/profile/detail-analyze"
       />
     </div>
-    <div className="flex mt-4 w-full justify-end mr-[30px]">
+    <!-- <div className="flex mt-4 w-full justify-end mr-[30px]">
       <Pagination
         :current-page="currentPage"
         :total-items="totalItems"
         :items-per-page="itemsPerPage"
         @pageChange="setCurrentPage"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { ref, onMounted, watch, computed, onUnmounted } from "vue";
 import VideosCard from "@components/cards/VideosCard.vue";
 import Pagination from "@components/partials/pagination.vue";
 import thumbnail from "@assets/img/thumb/thumbnail.jpg";
 import * as analyzeService from "@/services/analyzeService.js";
-
-const sampleData = [
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Analisis Final Liga Mahasiswa",
-    date: "2025-06-08",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/1",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Sesi Latihan Tembakan Tiga Angka",
-    date: "2025-06-05",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/2",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Drill Pertahanan Timnas U-19",
-    date: "2025-06-02",
-    uploadProgress: 80,
-    uploadStatus: "processing",
-    detailAnalysisUrl: "/detail-analyze/3",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Highlight Pertandingan Persahabatan",
-    date: "2025-05-30",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/4",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Analisis Pola Serangan Tim Merah",
-    date: "2025-05-28",
-    uploadProgress: 100,
-    uploadStatus: "failed",
-    detailAnalysisUrl: "/detail-analyze/5",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Scrimmage Game Internal Tim Biru",
-    date: "2025-05-25",
-    uploadProgress: 90,
-    uploadStatus: "failed",
-    detailAnalysisUrl: "/detail-analyze/6",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Kualifikasi Pekan Olahraga Nasional",
-    date: "2025-05-21",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/7",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Latihan Passing dan Visi Bermain",
-    date: "2025-05-19",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/8",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Uji Coba Lapangan Baru",
-    date: "2025-05-15",
-    uploadProgress: null,
-    uploadStatus: "waiting",
-    detailAnalysisUrl: "/detail-analyze/9",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Turnamen 3x3 Antar Klub",
-    date: "2025-05-12",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/10",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Evaluasi Performa Pemain Muda",
-    date: "2025-05-10",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/11",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Analisis Pertandingan: Babak Pertama",
-    date: "2025-05-09",
-    uploadProgress: 50,
-    uploadStatus: "processing",
-    detailAnalysisUrl: "/detail-analyze/12",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Sesi Latihan Fisik dan Stamina",
-    date: "2025-04-28",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/13",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Pertandingan Ekshibisi All-Star",
-    date: "2025-04-25",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/14",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Rekaman Latihan Rutin Pagi Hari",
-    date: "2025-04-22",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/15",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Analisis Statistik Pemain Center",
-    date: "2025-04-20",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/16",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Video Latihan Tim Tamu",
-    date: "2025-04-18",
-    uploadProgress: null,
-    uploadStatus: "waiting",
-    detailAnalysisUrl: "/detail-analyze/17",
-  },
-  {
-    thumbnail: "/thumb/thumbnail.jpg",
-    title: "Review Pertandingan Minggu Lalu",
-    date: "2025-04-15",
-    uploadProgress: 100,
-    uploadStatus: "completed",
-    detailAnalysisUrl: "/detail-analyze/18",
-  },
-];
+import * as ExtendedEventSource from "extended-eventsource";
 
 const videos = ref([]);
 const currentPage = ref(1);
@@ -203,7 +44,7 @@ const currentData = ref([]);
 const itemsPerPage = 3;
 
 const totalItems = computed(() => {
-  return sampleData.length;
+  return videos.value.length;
 });
 
 // const currentData = computed(() => {
@@ -219,7 +60,7 @@ const totalItems = computed(() => {
 // );
 
 function setCurrentData() {
-  currentData.value = sampleData.slice(
+  currentData.value = videos.value.slice(
     (currentPage.value - 1) * itemsPerPage,
     currentPage.value * itemsPerPage
   );
@@ -262,7 +103,48 @@ watch(videos, (newVideos) => {
 onMounted(async () => {
   await getAllVideos();
   setCurrentData();
-  console.log(currentData.value);
-  console.log((currentPage.value - 1) * itemsPerPage);
+  const token = analyzeService.getToken();
+
+  eventSource = new ExtendedEventSource(analyzeService.endPointUploadProgress, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  eventSource.onmessage = (event) => {
+    // Pastikan event.data ada isinya
+    if (event.data) {
+      try {
+        const data = JSON.parse(event.data);
+
+        // 3. Logika update state diubah ke sintaksis Vue
+        // Menggunakan videos.value untuk mengakses dan memperbarui array
+        const updatedVideos = videos.value.map((video) =>
+          video.id === data.video.id
+            ? {
+                ...video,
+                uploadProgress: data.video.progress,
+                uploadStatus: data.video.status,
+              }
+            : video
+        );
+
+        videos.value = updatedVideos;
+      } catch (e) {
+        console.error("Gagal mem-parsing data SSE:", e);
+      }
+    }
+  };
+
+  eventSource.onerror = (error) => {
+    console.error("Terjadi error pada koneksi EventSource:", error);
+  };
+});
+
+onUnmounted(() => {
+  if (eventSource) {
+    console.log("Menutup koneksi EventSource...");
+    eventSource.close();
+  }
 });
 </script>
